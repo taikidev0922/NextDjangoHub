@@ -31,7 +31,8 @@ INSTALLED_APPS = [
     'dj_rest_auth',
     'apiv1.apps.Apiv1Config',
     'sample.apps.SampleConfig',
-    'corsheaders'
+    'corsheaders',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -143,5 +144,5 @@ SIMPLE_JWT = {
 # CORS
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
+    'http://localhost:3001',
 ]

@@ -1,9 +1,12 @@
 "use client";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { SubmitHandler } from "react-hook-form";
 import { useAuth } from "@/context/AuthContext";
 import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/navigation";
+import TextInput from "@/components/TextInput";
+import Form from "@/components/Form";
+import Button from "@/components/Button";
+import { ApiClient } from "@/lib/api-client";
 
 type Inputs = {
   username: string;
@@ -19,35 +22,31 @@ const schema = yup
 
 export default function App() {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>({ resolver: yupResolver(schema) });
-  const { login, user } = useAuth();
+
+  const { login } = useAuth();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const response = await fetch("http://127.0.0.1:8000/api/v1/auth/login/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const json = await response.json();
-    login(json.user, json.access_token);
+    const res = await ApiClient.post("/auth/login/", data);
+    login(res.data.user, res.data.access_token);
     router.replace("/sample");
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {user && <p>{user.username}</p>}
-      <input defaultValue="admin" {...register("username")} />
-      <p>{errors.username?.message}</p>
-
-      <input {...register("password")} />
-      <p>{errors.password?.message}</p>
-
-      <input type="submit" />
-    </form>
+    <section className="flex justify-center items-center h-screen">
+      <Form schema={schema} onSubmit={onSubmit}>
+        <h1 className="text-2xl font-bold">Login</h1>
+        <TextInput name="username" label="username" />
+        <TextInput
+          name="password"
+          label="password"
+          type="password"
+          className="mt-2"
+        />
+        <Button className="btn-primary w-full mt-4">Login</Button>
+      </Form>
+    </section>
   );
 }
+
+App.getLayout = function getLayout(page: React.ReactNode) {
+  return <section>{page}</section>;
+};

@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { ApiClient } from "@/lib/api-client";
+import { FlexGrid } from "@grapecity/wijmo.react.grid";
+import { useApiClient } from "@/hooks/useApiClient";
 
 function SampleList() {
   const [queryParams, setQueryParams] = useState({});
   const [samples, setSamples] = useState([]);
+  const apiClient = useApiClient();
   const schema = yup
     .object({
       title: yup.string(),
@@ -25,7 +27,7 @@ function SampleList() {
 
   const onSubmit = async (data: any) => {
     setQueryParams(data);
-    const res = await ApiClient.get("/sample/", { params: queryParams });
+    const res = await apiClient.get("/sample/", { params: queryParams });
     setSamples(res.data);
   };
 
@@ -44,24 +46,7 @@ function SampleList() {
         {errors.description && <p>{errors.description.message}</p>}
         <button type="submit">Search</button>
       </form>
-      <table>
-        <thead>
-          <tr>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {samples?.map((item, index) => (
-            <tr key={index}>
-              <td>{item.title}</td>
-              <td>{item.price}</td>
-              <td>{item.description}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <FlexGrid itemsSource={samples} />
     </section>
   );
 }

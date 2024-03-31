@@ -18,7 +18,6 @@ function CreateSample() {
     resolver: yupResolver(schema),
   });
   const onSubmit = (data: any) => {
-    console.log(data);
     ApiClient.post("/sample/", {
       title: data.title,
       price: data.price,

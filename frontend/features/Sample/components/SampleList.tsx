@@ -1,9 +1,10 @@
+"use client";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { FlexGrid } from "@grapecity/wijmo.react.grid";
 import { useApiClient } from "@/hooks/useApiClient";
+import FlexGrid from "@/components/FlexGrid";
 
 function SampleList() {
   const [queryParams, setQueryParams] = useState({});

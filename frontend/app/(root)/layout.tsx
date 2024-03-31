@@ -11,7 +11,11 @@ export default function RootLayout({
   const [isNavOpen, setIsNavOpen] = useState(false);
   return (
     <LoadingProvider>
-      <Header isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
+      <Header
+        title="サンプルアプリ"
+        isNavOpen={isNavOpen}
+        setIsNavOpen={setIsNavOpen}
+      />
       <main
         className={`p-5 h-screen bg-slate-100 transition-all duration-300 ease-in-out ${
           isNavOpen ? "translate-x-64" : ""

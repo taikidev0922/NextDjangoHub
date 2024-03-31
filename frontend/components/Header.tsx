@@ -2,19 +2,39 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import React from "react";
 import { MdMenu, MdAccountCircle } from "react-icons/md";
+import { ApiClient } from "@/lib/api-client";
+import { useRouter } from "next/navigation";
+import Menu from "./Menu";
 
 type Props = {
   isNavOpen: boolean;
+  title: string;
   setIsNavOpen: (value: boolean) => void;
 };
 
-function Header({ isNavOpen, setIsNavOpen }: Props) {
-  const { user } = useAuth();
+function Header({ isNavOpen, setIsNavOpen, title }: Props) {
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   const toggleNav = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     setIsNavOpen(!isNavOpen);
   };
+
+  const menuItems = [
+    {
+      label: "ログアウト",
+      onClick: async () => {
+        try {
+          await ApiClient.post("/auth/logout/");
+        } finally {
+          logout();
+          router.replace("/login");
+        }
+      },
+    },
+    { label: "bbb", onClick: () => {} },
+  ];
 
   return (
     <>
@@ -23,12 +43,14 @@ function Header({ isNavOpen, setIsNavOpen }: Props) {
           <MdMenu size={27} color="white" />
         </button>
         <h1 className="text-white text-xl font-bold flex-grow text-center">
-          サンプルアプリ
+          {title}
         </h1>
-        <h1 className="text-white text-xl font-bold mr-3">{user?.username}</h1>
-        <button>
+        <Menu items={menuItems}>
+          <div className="text-white text-xl font-bold mr-3">
+            {user?.username}
+          </div>
           <MdAccountCircle size={27} color="white" />
-        </button>
+        </Menu>
       </header>
 
       <nav
@@ -40,9 +62,6 @@ function Header({ isNavOpen, setIsNavOpen }: Props) {
         <ul className="text-white text-lg">
           <li className="link">
             <Link href="/">Home</Link>
-          </li>
-          <li className="link">
-            <Link href="/login">Login</Link>
           </li>
           <li className="link">
             <Link href="/sample">Sample</Link>

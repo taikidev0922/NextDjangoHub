@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useApiClient } from "@/hooks/useApiClient";
 import GridForm from "@/components/GridForm";
 import Button from "@/components/Button";
+import TextInput from "@/components/TextInput";
+import Form from "@/components/Form";
 
 function SampleList() {
   const [queryParams, setQueryParams] = useState({});
@@ -18,14 +18,6 @@ function SampleList() {
       description: yup.string(),
     })
     .required();
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
 
   const onSubmit = async (data: any) => {
     setQueryParams(data);
@@ -62,20 +54,20 @@ function SampleList() {
   // データをレンダリングする
   return (
     <section>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label>title</label>
-        <input type="text" {...register("title")} />
-        {errors.title && <p>{errors.title.message}</p>}
-        <label>price</label>
-        <input {...register("price")} />
-        {errors.price && <p>{errors.price.message}</p>}
-        <label>description</label>
-        <input type="text" {...register("description")} />
-        {errors.description && <p>{errors.description.message}</p>}
-        <button type="submit">Search</button>
-      </form>
+      <Form onSubmit={onSubmit} schema={schema}>
+        <div className="flex">
+          <TextInput name="title" label="title" />
+          <TextInput name="price" label="price" />
+          <TextInput name="description" label="description" />
+          <Button className="btn-primary" type="submit">
+            検索
+          </Button>
+        </div>
+      </Form>
       <GridForm itemsSource={samples} columns={columns} onSubmit={onListSubmit}>
-        <Button type="submit">更新</Button>
+        <Button className="btn-success" type="submit">
+          更新
+        </Button>
       </GridForm>
     </section>
   );

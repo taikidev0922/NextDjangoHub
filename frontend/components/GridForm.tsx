@@ -22,6 +22,16 @@ export default function GridForm({
   const onInit = (grid: WjFlexGridType) => {
     setGrid(grid);
     grid.autoGenerateColumns = false;
+    grid.itemsSource = [
+      {
+        isSelected: false,
+      },
+    ];
+    grid.cellEditEnding.addHandler((s, e) => {
+      grid.beginUpdate();
+      grid.collectionView.items[e.row].isSelected = true;
+      grid.endUpdate();
+    });
   };
   const extendedColumns = [
     {

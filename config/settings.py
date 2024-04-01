@@ -138,7 +138,7 @@ REST_USE_JWT = True
 # django-rest-framwwork-simplejwt
 SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('JWT',),
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=300),
 }
 
 # CORS

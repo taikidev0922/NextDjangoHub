@@ -3,9 +3,10 @@ from sample.models import Sample
 from rest_framework.validators import UniqueTogetherValidator
 
 class SampleSerializer(serializers.ModelSerializer):
+    cookie = serializers.IntegerField(required=False)
     class Meta:
         model = Sample
-        fields = ['id','title','description','price']
+        fields = '__all__'
         # 単体
         extra_kwargs = {
             'title':{
@@ -18,25 +19,8 @@ class SampleSerializer(serializers.ModelSerializer):
                 'max_length':15,
             }
         }
-        # 組み合わせ
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Sample.objects.all(),
-                fields=('title','description'),
-                message='タイトルと備考の組み合わせは既に存在します'
-            )
-        ]
 
-    # 特定の項目にカスタム
-    def validate_price(self, value):
-        if value < 100:
-            raise serializers.ValidationError('hogeerror')
-        return value
 
-    # 全体
-    def validate(self,value):
-        title = value.get('title')
-        if 'hgoe' in title:
-            raise serializers.ValidationError('titleにhogeが指定されています')
-        return value
+class BulkSampleListSerializer(serializers.ListSerializer):
+    child = SampleSerializer()
 

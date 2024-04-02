@@ -1,5 +1,3 @@
-import { getToken } from "@/context/AuthContext";
-import { useLoading } from "@/context/LoadingContext";
 import axios from "axios";
 // 環境変数よりエンドポイントを設定 (今回はhttps://jsonplaceholder.typicode.com)
 const baseURL = "http://localhost:8000/api/v1";

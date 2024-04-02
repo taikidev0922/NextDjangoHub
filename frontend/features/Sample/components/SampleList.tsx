@@ -8,7 +8,6 @@ import TextInput from "@/components/TextInput";
 import Form from "@/components/Form";
 
 function SampleList() {
-  const [queryParams, setQueryParams] = useState({});
   const [samples, setSamples] = useState([]);
   const apiClient = useApiClient();
   const schema = yup
@@ -20,17 +19,11 @@ function SampleList() {
     .required();
 
   const onSubmit = async (data: any) => {
-    setQueryParams(data);
-    const res = await apiClient.get("/sample/", { params: queryParams });
-    console.log(res.data);
+    const res = await apiClient.get("/sample/", { params: data });
     setSamples(res.data);
   };
 
   const columns = [
-    {
-      binding: "id",
-      header: "id",
-    },
     {
       binding: "title",
       header: "title",

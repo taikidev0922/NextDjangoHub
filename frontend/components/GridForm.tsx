@@ -1,6 +1,9 @@
 "use client";
-import { FlexGrid } from "@grapecity/wijmo.react.grid";
-import { FlexGrid as WjFlexGridType } from "@grapecity/wijmo.grid";
+import { FlexGrid, FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
+import {
+  FlexGrid as WjFlexGridType,
+  ICellTemplateContext,
+} from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
 import { useState } from "react";
 import _cloneDeep from "lodash/cloneDeep";
@@ -22,15 +25,19 @@ export default function GridForm({
   const onInit = (grid: WjFlexGridType) => {
     setGrid(grid);
     grid.autoGenerateColumns = false;
-    grid.itemsSource = [
-      {
-        isSelected: false,
-      },
-    ];
+    grid.itemsSource = Array.from({ length: 10 }, () => ({
+      isSelected: false,
+    }));
+
     grid.cellEditEnding.addHandler((s, e) => {
       grid.beginUpdate();
       grid.collectionView.items[e.row].isSelected = true;
       grid.endUpdate();
+    });
+    grid.itemsSourceChanged.addHandler((sender, args) => {
+      sender.itemsSource.forEach((item) => {
+        item.isSelected = false;
+      });
     });
   };
   const extendedColumns = [
@@ -38,6 +45,32 @@ export default function GridForm({
       binding: "isSelected",
       header: " ",
       dataType: DataType.Boolean,
+      cssClass: "wj-header",
+      allowSorting: false,
+      width: 40,
+    },
+    {
+      binding: "operation",
+      header: " ",
+      dataType: DataType.String,
+      cssClass: "wj-header",
+      allowSorting: false,
+      width: 40,
+      cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
+        cell.style.textAlign = "center";
+        if (!context.item.isSelected) {
+          cell.style.backgroundColor = "";
+          return;
+        }
+        if (context.item.id) {
+          cell.style.backgroundColor = "#32CD32";
+          return `<span class="text-white text-xl font-mono">U</span>`;
+        }
+        if (!context.item.id) {
+          cell.style.backgroundColor = "#4169E1";
+          return `<span class="text-white text-xl font-mono">I</span>`;
+        }
+      },
     },
     ...columns,
   ];
@@ -73,7 +106,14 @@ export default function GridForm({
         itemsSource={itemsSource}
         initialized={onInit}
         columns={extendedColumns}
-      />
+      >
+        <FlexGridCellTemplate
+          cellType="RowHeader"
+          template={(context: ICellTemplateContext) => {
+            return `${context.row.index + 1}`;
+          }}
+        />
+      </FlexGrid>
       {children}
     </form>
   );

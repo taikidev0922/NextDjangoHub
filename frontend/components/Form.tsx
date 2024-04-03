@@ -1,21 +1,37 @@
-import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider } from "react-hook-form";
+import Card from "./Card";
+import Button from "./Button";
 
 type PropType = {
   children: React.ReactNode;
-  schema: any;
+  methods: any;
   onSubmit: any;
+  actionButton: React.ReactNode;
+  title?: string;
 };
 
-export default function Form({ children, schema, onSubmit }: PropType) {
-  const methods = useForm({
-    resolver: yupResolver(schema),
-  });
+export default function Form({
+  children,
+  methods,
+  onSubmit,
+  actionButton,
+  title,
+}: PropType) {
+  if (!methods) {
+    throw new Error("methods is required");
+  }
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-        {children}
-      </form>
+      <Card title={title}>
+        <form
+          onSubmit={methods?.handleSubmit(onSubmit)}
+          noValidate
+          className="flex gap-3"
+        >
+          {children}
+          <div className="self-end ml-auto mr-2">{actionButton}</div>
+        </form>
+      </Card>
     </FormProvider>
   );
 }

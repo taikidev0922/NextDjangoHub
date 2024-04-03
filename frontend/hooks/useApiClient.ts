@@ -1,29 +1,45 @@
 import { getToken } from "@/context/AuthContext";
 import { useLoading } from "@/context/LoadingContext";
+import { useMessage } from "@/context/MessageContext";
 import { ApiClient } from "@/lib/api-client";
+import { AxiosError, AxiosRequestConfig } from "axios";
 
 export function useApiClient() {
+  const { addMessage } = useMessage();
   const { startLoading, stopLoading } = useLoading();
   // レスポンスのエラー判定処理
   ApiClient.interceptors.response.use(
     (response) => {
       stopLoading();
+      if (response.config.message) {
+        addMessage({
+          text: response.config.message,
+          type: "success",
+        });
+      }
+      if (response.config.isSearch && response.data.length === 0) {
+        addMessage({
+          text: "検索結果が見つかりません",
+          type: "error",
+        });
+      }
+      if (response.config.isUpdate) {
+        addMessage({
+          text: "更新が完了しました",
+          type: "success",
+        });
+      }
       return response;
     },
-    (error) => {
+    (error: AxiosError) => {
       stopLoading();
-      console.log(error);
       switch (error?.response?.status) {
         case 401:
           break;
         case 404:
           break;
         default:
-          console.log("== internal server error");
       }
-
-      const errorMessage = (error.response?.data?.message || "").split(",");
-      throw new Error(errorMessage);
     }
   );
 
@@ -31,11 +47,13 @@ export function useApiClient() {
   ApiClient.interceptors.request.use(async (request: any) => {
     startLoading();
     // アクセストークンを取得し共通headerに格納
-    if (request.url.includes("/auth/login/")) {
+    if (request.url?.includes("/auth/login/")) {
       return request;
     }
     const accessToken = getToken();
-    request.headers["Authorization"] = "JWT " + accessToken;
+    if (request.headers) {
+      request.headers["Authorization"] = "JWT " + accessToken;
+    }
     return request;
   });
   return ApiClient;

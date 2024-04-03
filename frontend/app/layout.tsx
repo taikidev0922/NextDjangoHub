@@ -3,6 +3,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import "@grapecity/wijmo.styles/wijmo.css";
 import "./globals.css";
 import { useEffect } from "react";
+import { MessageProvider } from "@/context/MessageContext";
 
 export default function RootLayout({
   children,
@@ -23,7 +24,9 @@ export default function RootLayout({
     <html lang="ja">
       <body>
         <AuthProvider>
-          <body>{children}</body>
+          <MessageProvider>
+            <body>{children}</body>
+          </MessageProvider>
         </AuthProvider>
       </body>
     </html>

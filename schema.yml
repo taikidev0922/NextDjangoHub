@@ -1,0 +1,817 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/v1/auth/logout/:
+    get:
+      operationId: listLogouts
+      description: 'Calls Django logout method and delete the Token object
+
+        assigned to the current User object.
+
+
+        Accepts/Returns nothing.'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createLogout
+      description: 'Calls Django logout method and delete the Token object
+
+        assigned to the current User object.
+
+
+        Accepts/Returns nothing.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+          application/x-www-form-urlencoded:
+            schema: {}
+          multipart/form-data:
+            schema: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/user/:
+    get:
+      operationId: retrieveUserDetails
+      description: 'Reads and updates UserModel fields
+
+        Accepts GET, PUT, PATCH methods.
+
+
+        Default accepted fields: username, first_name, last_name
+
+        Default display fields: pk, username, email, first_name, last_name
+
+        Read-only fields: pk, email
+
+
+        Returns UserModel fields.'
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateUserDetails
+      description: 'Reads and updates UserModel fields
+
+        Accepts GET, PUT, PATCH methods.
+
+
+        Default accepted fields: username, first_name, last_name
+
+        Default display fields: pk, username, email, first_name, last_name
+
+        Read-only fields: pk, email
+
+
+        Returns UserModel fields.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateUserDetails
+      description: 'Reads and updates UserModel fields
+
+        Accepts GET, PUT, PATCH methods.
+
+
+        Default accepted fields: username, first_name, last_name
+
+        Default display fields: pk, username, email, first_name, last_name
+
+        Read-only fields: pk, email
+
+
+        Returns UserModel fields.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserDetails'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDetails'
+          description: ''
+      tags:
+      - api
+  /api/v1/sample/:
+    get:
+      operationId: listSamples
+      description: ''
+      parameters:
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: description
+        required: false
+        in: query
+        description: description
+        schema:
+          type: string
+      - name: price
+        required: false
+        in: query
+        description: price
+        schema:
+          type: string
+      - name: created_at
+        required: false
+        in: query
+        description: created_at
+        schema:
+          type: string
+      - name: updated_at
+        required: false
+        in: query
+        description: updated_at
+        schema:
+          type: string
+      - name: price_lte
+        required: false
+        in: query
+        description: price_lte
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createSample
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sample'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+  /api/v1/sample/{id}/:
+    get:
+      operationId: retrieveSample
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this sample.
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: description
+        required: false
+        in: query
+        description: description
+        schema:
+          type: string
+      - name: price
+        required: false
+        in: query
+        description: price
+        schema:
+          type: string
+      - name: created_at
+        required: false
+        in: query
+        description: created_at
+        schema:
+          type: string
+      - name: updated_at
+        required: false
+        in: query
+        description: updated_at
+        schema:
+          type: string
+      - name: price_lte
+        required: false
+        in: query
+        description: price_lte
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateSample
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this sample.
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: description
+        required: false
+        in: query
+        description: description
+        schema:
+          type: string
+      - name: price
+        required: false
+        in: query
+        description: price
+        schema:
+          type: string
+      - name: created_at
+        required: false
+        in: query
+        description: created_at
+        schema:
+          type: string
+      - name: updated_at
+        required: false
+        in: query
+        description: updated_at
+        schema:
+          type: string
+      - name: price_lte
+        required: false
+        in: query
+        description: price_lte
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sample'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateSample
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this sample.
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: description
+        required: false
+        in: query
+        description: description
+        schema:
+          type: string
+      - name: price
+        required: false
+        in: query
+        description: price
+        schema:
+          type: string
+      - name: created_at
+        required: false
+        in: query
+        description: created_at
+        schema:
+          type: string
+      - name: updated_at
+        required: false
+        in: query
+        description: updated_at
+        schema:
+          type: string
+      - name: price_lte
+        required: false
+        in: query
+        description: price_lte
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sample'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroySample
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: A UUID string identifying this sample.
+        schema:
+          type: string
+      - name: id
+        required: false
+        in: query
+        description: id
+        schema:
+          type: string
+      - name: title
+        required: false
+        in: query
+        description: title
+        schema:
+          type: string
+      - name: description
+        required: false
+        in: query
+        description: description
+        schema:
+          type: string
+      - name: price
+        required: false
+        in: query
+        description: price
+        schema:
+          type: string
+      - name: created_at
+        required: false
+        in: query
+        description: created_at
+        schema:
+          type: string
+      - name: updated_at
+        required: false
+        in: query
+        description: updated_at
+        schema:
+          type: string
+      - name: price_lte
+        required: false
+        in: query
+        description: price_lte
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/password/reset/:
+    post:
+      operationId: createPasswordReset
+      description: 'Calls Django Auth PasswordResetForm save method.
+
+
+        Accepts the following POST parameters: email
+
+        Returns the success/fail message.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordReset'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordReset'
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/password/reset/confirm/:
+    post:
+      operationId: createPasswordResetConfirm
+      description: "Password reset e-mail link is confirmed, therefore\nthis resets\
+        \ the user's password.\n\nAccepts the following POST parameters: token, uid,\n\
+        \    new_password1, new_password2\nReturns the success/fail message."
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordResetConfirm'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordResetConfirm'
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/login/:
+    post:
+      operationId: createLogin
+      description: 'Check the credentials and return the REST Token
+
+        if the credentials are valid and authenticated.
+
+        Calls Django Auth login method to register User ID
+
+        in Django session framework
+
+
+        Accept the following POST parameters: username, password
+
+        Return the REST Framework Token Object''s key.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Login'
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/password/change/:
+    post:
+      operationId: createPasswordChange
+      description: 'Calls Django Auth SetPasswordForm save method.
+
+
+        Accepts the following POST parameters: new_password1, new_password2
+
+        Returns the success/fail message.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordChange'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordChange'
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/token/verify/:
+    post:
+      operationId: createTokenVerify
+      description: 'Takes a token and indicates if it is valid.  This view provides
+        no
+
+        information about a token''s fitness for a particular use.'
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenVerify'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenVerify'
+          description: ''
+      tags:
+      - api
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: createCookieTokenRefresh
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CookieTokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CookieTokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CookieTokenRefresh'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CookieTokenRefresh'
+          description: ''
+      tags:
+      - api
+  /api/v1/sample/bulk_update/:
+    put:
+      operationId: bulkUpdateSample
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Sample'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Sample'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sample'
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    UserDetails:
+      type: object
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: "\u3053\u306E\u9805\u76EE\u306F\u5FC5\u9808\u3067\u3059\u3002\
+            \u534A\u89D2\u30A2\u30EB\u30D5\u30A1\u30D9\u30C3\u30C8\u3001\u534A\u89D2\
+            \u6570\u5B57\u3001@/./+/-/_ \u3067150\u6587\u5B57\u4EE5\u4E0B\u306B\u3057\
+            \u3066\u304F\u3060\u3055\u3044\u3002"
+          pattern: ^[\w.@+-]+\z
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+      required:
+      - username
+    Sample:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        cookie:
+          type: integer
+        title:
+          type: string
+          maxLength: 10
+        description:
+          type: string
+          nullable: true
+          maxLength: 15
+        price:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - title
+    PasswordReset:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    PasswordResetConfirm:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+        uid:
+          type: string
+        token:
+          type: string
+      required:
+      - new_password1
+      - new_password2
+      - uid
+      - token
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - password
+    PasswordChange:
+      type: object
+      properties:
+        new_password1:
+          type: string
+          maxLength: 128
+        new_password2:
+          type: string
+          maxLength: 128
+      required:
+      - new_password1
+      - new_password2
+    TokenVerify:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    CookieTokenRefresh:
+      type: object
+      properties:
+        refresh:
+          type: string
+          description: WIll override cookie.
+        access:
+          type: string
+          readOnly: true

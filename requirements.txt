@@ -1,4 +1,5 @@
 asgiref==3.8.1
+backports.zoneinfo==0.2.1
 dj-rest-auth==2.2.8
 Django==4.2.11
 django-cors-headers==3.13.0
@@ -7,5 +8,7 @@ djangorestframework==3.14.0
 djangorestframework-simplejwt==5.2.2
 PyJWT==2.8.0
 pytz==2024.1
+PyYAML==6.0.1
 sqlparse==0.4.4
 typing-extensions==4.10.0
+uritemplate==4.1.1

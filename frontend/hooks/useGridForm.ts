@@ -10,8 +10,14 @@ import { useMessage } from "@/context/MessageContext";
 
 export type GridColumn = Partial<Column>;
 
-export function useGridForm(columns: GridColumn[]) {
-  const [grid, setGrid] = useState<FlexGridType>();
+type GridItem<T> = T & {
+  isSelected: boolean;
+  cookie: number;
+  operation: string;
+};
+
+export function useGridForm<T>(columns: GridColumn[]) {
+  const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
   const { addMessage } = useMessage();
 
   const initGrid = (e: FlexGridType) => {
@@ -22,7 +28,7 @@ export function useGridForm(columns: GridColumn[]) {
     }));
     e.itemsSourceChanged.addHandler(() => {
       e.beginUpdate();
-      e.collectionView.items.forEach((item) => {
+      e.collectionView?.items.forEach((item) => {
         item.isSelected = false;
       });
       e.endUpdate();
@@ -97,7 +103,7 @@ export function useGridForm(columns: GridColumn[]) {
       });
       throw new Error("明細を選択してください");
     }
-    return selectedItems;
+    return selectedItems ?? [];
   };
 
   const applyResults = (results: any[]) => {
@@ -106,6 +112,7 @@ export function useGridForm(columns: GridColumn[]) {
       const target = grid?.collectionView.items.find(
         (item) => item.cookie === res.cookie
       );
+      if (!target) return;
       target.isSelected = false;
       _assign(target, res);
     });

@@ -14,11 +14,13 @@ export default function RootLayout({
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const apiClient = useApiClient();
+  const { request } = useApiClient();
   const { setUser } = useAuth();
   useEffect(() => {
-    apiClient
-      .get("/auth/user/")
+    request({
+      url: "/api/v1/auth/user/",
+      method: "get",
+    })
       .then((res) => {
         setUser(res.data);
         setIsLoggedIn(true);

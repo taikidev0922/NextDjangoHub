@@ -2,9 +2,9 @@ import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
 import React from "react";
 import { MdMenu, MdAccountCircle } from "react-icons/md";
-import { ApiClient } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
 import Menu from "./Menu";
+import { useApiClient } from "@/hooks/useApiClient";
 
 type Props = {
   isNavOpen: boolean;
@@ -15,6 +15,7 @@ type Props = {
 function Header({ isNavOpen, setIsNavOpen, title }: Props) {
   const { user, logout } = useAuth();
   const router = useRouter();
+  const { request } = useApiClient();
 
   const toggleNav = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -26,7 +27,10 @@ function Header({ isNavOpen, setIsNavOpen, title }: Props) {
       label: "ログアウト",
       onClick: async () => {
         try {
-          await ApiClient.post("/auth/logout/");
+          await request({
+            url: "/api/v1/auth/logout/",
+            method: "post",
+          });
         } finally {
           logout();
           router.replace("/login");

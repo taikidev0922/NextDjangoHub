@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'apiv1.apps.Apiv1Config',
     'sample.apps.SampleConfig',
     'corsheaders',
-    'django_filters'
+    'django_filters',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -130,6 +131,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # dj-rest-auth

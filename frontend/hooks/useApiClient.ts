@@ -3,6 +3,18 @@ import { useLoading } from "@/context/LoadingContext";
 import { useMessage } from "@/context/MessageContext";
 import { ApiClient } from "@/lib/api-client";
 import { AxiosError, AxiosRequestConfig } from "axios";
+import { AxiosResponse } from "axios";
+import * as schemaHelper from "@/lib/schemaHelper";
+
+export type AxiosConfigWrapper<
+  Path extends schemaHelper.UrlPaths,
+  Method extends schemaHelper.HttpMethods
+> = {
+  url: Path;
+  method: Method & schemaHelper.HttpMethodsFilteredByPath<Path>;
+  params?: schemaHelper.RequestParameters<Path, Method>;
+  data?: schemaHelper.RequestData<Path, Method>;
+};
 
 export function useApiClient() {
   const { addMessage } = useMessage();
@@ -56,5 +68,18 @@ export function useApiClient() {
     }
     return request;
   });
-  return ApiClient;
+
+  function request<
+    Path extends schemaHelper.UrlPaths,
+    Method extends schemaHelper.HttpMethods
+  >(config: AxiosConfigWrapper<Path, Method> & AxiosRequestConfig) {
+    return ApiClient.request<
+      schemaHelper.ResponseData<Path, Method>,
+      AxiosResponse<schemaHelper.ResponseData<Path, Method>>,
+      AxiosConfigWrapper<Path, Method>["data"]
+    >(config);
+  }
+  return {
+    request,
+  };
 }

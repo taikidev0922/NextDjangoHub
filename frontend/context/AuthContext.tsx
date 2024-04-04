@@ -1,13 +1,6 @@
 "use client";
+import { User } from "@/models/User";
 import { createContext, useContext, useState } from "react";
-
-export type User = {
-  email: string;
-  first_name: string;
-  last_name: string;
-  pk: number;
-  username: string;
-};
 
 interface AuthContextType {
   user: User | null;

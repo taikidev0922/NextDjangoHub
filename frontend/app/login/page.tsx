@@ -23,7 +23,7 @@ const schema = yup
 
 export default function App() {
   const router = useRouter();
-  const apiClient = useApiClient();
+  const { request } = useApiClient();
 
   const methods = useForm({
     resolver: yupResolver(schema),
@@ -31,14 +31,24 @@ export default function App() {
 
   const { login } = useAuth();
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const res = await apiClient.post("/auth/login/", data);
+    const res = await request({
+      url: "/api/v1/auth/login/",
+      method: "post",
+      data,
+    });
     login(res.data.user, res.data.access_token);
     router.replace("/sample");
   };
 
   return (
     <section className="flex justify-center items-center h-screen">
-      <Form methods={methods} onSubmit={onSubmit}>
+      <Form
+        methods={methods}
+        onSubmit={onSubmit}
+        actionButton={
+          <Button className="btn-primary w-full mt-4">Login</Button>
+        }
+      >
         <h1 className="text-2xl font-bold">Login</h1>
         <TextInput name="username" label="username" />
         <TextInput
@@ -47,7 +57,6 @@ export default function App() {
           type="password"
           className="mt-2"
         />
-        <Button className="btn-primary w-full mt-4">Login</Button>
       </Form>
     </section>
   );

@@ -1,6 +1,5 @@
 "use client";
 import * as yup from "yup";
-import { useApiClient } from "@/hooks/useApiClient";
 import GridForm from "@/components/GridForm";
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput";
@@ -8,26 +7,27 @@ import Form from "@/components/Form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGridForm } from "@/hooks/useGridForm";
-import Card from "@/components/Card";
 import Actions from "@/components/Actions";
+import { Sample } from "@/models/Sample";
+import { RequestParameters } from "@/lib/schemaHelper";
+import { useApiClient } from "@/hooks/useApiClient";
+
+type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
-  const apiClient = useApiClient();
-
-  const methods = useForm({
+  const { request } = useApiClient();
+  const methods = useForm<SampleQuery>({
     resolver: yupResolver(
-      yup
-        .object({
-          title: yup.string(),
-          price: yup.string(),
-          description: yup.string(),
-        })
-        .required()
+      yup.object({
+        title: yup.string(),
+        price: yup.number(),
+        description: yup.string(),
+      })
     ),
   });
 
   const { register, setItemsSource, getSelectedItems, applyResults } =
-    useGridForm([
+    useGridForm<Sample>([
       {
         binding: "title",
         header: "title",
@@ -42,8 +42,10 @@ function SampleList() {
       },
     ]);
 
-  const search = async (data: any) => {
-    const res = await apiClient.get("/sample/", {
+  const search = async (data: SampleQuery) => {
+    const res = await request({
+      url: "/api/v1/sample/",
+      method: "get",
       params: data,
       isSearch: true,
     });
@@ -53,7 +55,10 @@ function SampleList() {
   const update = async () => {
     try {
       const selectedItems = getSelectedItems({ raiseException: true });
-      const res = await apiClient.put("/sample/bulk_update/", selectedItems, {
+      const res = await request({
+        url: "/api/v1/sample/bulk_update/",
+        method: "put",
+        data: selectedItems,
         isUpdate: true,
       });
       applyResults(res.data);

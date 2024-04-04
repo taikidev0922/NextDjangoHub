@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from sample.models import Sample
@@ -23,6 +24,7 @@ class SampleViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend]
     filterset_class = SampleFilter
 
+    @extend_schema(request=BulkSampleListSerializer, responses={200: BulkSampleListSerializer})
     @action(detail=False, methods=['put'])
     def bulk_update(self, request, *args, **kwargs):
         serializer = BulkSampleListSerializer(data=request.data)

@@ -22,3 +22,19 @@ describe("add", () => {
     expect(() => add(-1, 1)).toThrow(NegativeError);
   });
 });
+
+function wait(ms: number) {
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(ms), ms);
+  });
+}
+
+test("wait", async () => {
+  const result = await wait(1000);
+  expect(result).toBe(1000);
+});
+test("wait", () => {
+  wait(1000).then((result) => {
+    expect(result).toBe(1000);
+  });
+});

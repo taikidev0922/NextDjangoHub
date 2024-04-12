@@ -2,7 +2,7 @@
 import * as yup from "yup";
 import GridForm from "@/components/GridForm";
 import Button from "@/components/Button";
-import TextInput from "@/components/TextInput";
+import TextInput from "@/components/TextInput/TextInput";
 import Form from "@/components/Form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

@@ -12,11 +12,15 @@ import { Sample } from "@/models/Sample";
 import { RequestParameters } from "@/lib/schemaHelper";
 import { request } from "@/lib/axiosUtils";
 import { useMessage } from "@/context/MessageContext";
+import { useUpdate } from "@/hooks/useUpdate";
+import { useFetch } from "@/hooks/useFetch";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
   const { addMessage } = useMessage();
+  const { update } = useUpdate();
+  const { fetch } = useFetch();
   const methods = useForm<SampleQuery>({
     resolver: yupResolver(
       yup.object({
@@ -32,48 +36,35 @@ function SampleList() {
       {
         binding: "title",
         header: "title",
+        dataType: "string",
       },
       {
         binding: "price",
         header: "price",
+        dataType: "number",
       },
       {
         binding: "description",
         header: "description",
+        dataType: "string",
       },
     ]);
 
   const search = async (data: SampleQuery) => {
-    const res = await request({
+    const items = await fetch({
       url: "/api/v1/sample/",
       method: "get",
       params: data,
     });
-    setItemsSource(res.data);
-    if (res.data.length === 0) {
-      addMessage({
-        text: "検索結果が見つかりません",
-        type: "error",
-      });
-    }
+    setItemsSource(items);
   };
 
-  const update = async () => {
-    try {
-      const selectedItems = getSelectedItems({ raiseException: true });
-      const res = await request({
-        url: "/api/v1/sample/bulk_update/",
-        method: "put",
-        data: selectedItems,
-      });
-      applyResults(res.data);
-      addMessage({
-        text: "更新が完了しました",
-        type: "success",
-      });
-    } catch (error) {
-      return;
-    }
+  const onUpdate = async () => {
+    const results = await update(
+      { url: "/api/v1/sample/bulk_update/", method: "put" },
+      getSelectedItems()
+    );
+    applyResults(results);
   };
 
   return (
@@ -90,7 +81,7 @@ function SampleList() {
       </Form>
       <GridForm {...register("test")} />
       <Actions>
-        <Button onClick={update} className="btn-success">
+        <Button onClick={onUpdate} className="btn-success">
           F2 更新
         </Button>
       </Actions>

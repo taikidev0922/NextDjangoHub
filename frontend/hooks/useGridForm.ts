@@ -2,18 +2,26 @@ import { useState } from "react";
 import {
   FlexGrid as FlexGridType,
   ICellTemplateContext,
+  CellType,
 } from "@grapecity/wijmo.grid";
-import { Column } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
 import _assign from "lodash/assign";
 import { useMessage } from "@/context/MessageContext";
 
-export type GridColumn = Partial<Column>;
+export type GridColumn = {
+  binding: string;
+  header: string;
+  dataType: "string" | "number" | "boolean";
+  width?: number;
+  cssClass?: string;
+  allowSorting?: boolean;
+};
 
 type GridItem<T> = T & {
   isSelected: boolean;
   cookie: number;
   operation: string;
+  id: number | null;
 };
 
 export function useGridForm<T>(columns: GridColumn[]) {
@@ -26,6 +34,11 @@ export function useGridForm<T>(columns: GridColumn[]) {
     e.itemsSource = Array.from({ length: 10 }, () => ({
       isSelected: false,
     }));
+    e.itemFormatter = (panel, r, c, cell) => {
+      if (panel.cellType === CellType.ColumnHeader) {
+        cell.style.textAlign = "left";
+      }
+    };
     e.itemsSourceChanged.addHandler(() => {
       e.beginUpdate();
       e.collectionView?.items.forEach((item) => {
@@ -40,10 +53,48 @@ export function useGridForm<T>(columns: GridColumn[]) {
     });
   };
 
+  const addRow = () => {
+    grid?.collectionView.sourceCollection.splice(
+      grid.selection.row + 1,
+      0,
+      {} as GridItem<T>
+    );
+    grid?.collectionView.refresh();
+    grid?.select(grid.selection.row + 1, grid.selection.col);
+  };
+
+  const deleteRow = () => {
+    if (grid?.collectionView.currentItem.id) {
+      grid.beginUpdate();
+      grid.collectionView.currentItem.isSelected = true;
+      grid.collectionView.currentItem.operation = "DELETE";
+      grid.endUpdate();
+      return;
+    }
+    grid?.collectionView.sourceCollection.splice(grid.selection.row, 1);
+    grid?.collectionView.refresh();
+  };
+
+  const copyRow = () => {
+    if (!grid) return;
+    addRow();
+    grid?.beginUpdate();
+    _assign(
+      grid?.collectionView.currentItem,
+      grid?.collectionView.items[grid.selection.row - 1]
+    );
+    grid.collectionView.currentItem.id = null;
+    grid.collectionView.currentItem.isSelected = true;
+    grid?.endUpdate();
+  };
+
   const register = (name: string) => {
     return {
       name,
       initGrid,
+      addRow,
+      deleteRow,
+      copyRow,
       columns: [
         {
           binding: "isSelected",
@@ -62,17 +113,21 @@ export function useGridForm<T>(columns: GridColumn[]) {
           width: 40,
           cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
             cell.style.textAlign = "center";
+            if (context.item.operation === "DELETE") {
+              cell.style.backgroundColor = "#FF0000";
+              return `<span class="text-white leading-none font-mono" style="font-size: 1.25rem;">D</span>`;
+            }
             if (!context.item.isSelected) {
               cell.style.backgroundColor = "";
               return;
             }
             if (context.item.id) {
               cell.style.backgroundColor = "#32CD32";
-              return `<span class="text-white text-xl font-mono">U</span>`;
+              return `<span class="text-white font-mono" style="font-size: 1.25rem;">U</span>`;
             }
             if (!context.item.id) {
               cell.style.backgroundColor = "#4169E1";
-              return `<span class="text-white text-xl font-mono">I</span>`;
+              return `<span class="text-white font-mono" style="font-size: 1.25rem;">I</span>`;
             }
           },
         },
@@ -85,24 +140,13 @@ export function useGridForm<T>(columns: GridColumn[]) {
     grid!.itemsSource = itemsSource;
   };
 
-  const getSelectedItems = ({
-    raiseException,
-  }: {
-    raiseException?: boolean;
-  }) => {
+  const getSelectedItems = () => {
     grid?.collectionView.items.forEach((item, index) => {
       item.cookie = index;
     });
     const selectedItems = grid?.collectionView.items.filter(
       (item) => item.isSelected
     );
-    if (raiseException && selectedItems?.length === 0) {
-      addMessage({
-        text: "明細を選択してください",
-        type: "error",
-      });
-      throw new Error("明細を選択してください");
-    }
     return selectedItems ?? [];
   };
 
@@ -125,5 +169,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
     setItemsSource,
     getSelectedItems,
     applyResults,
+    addRow,
+    copyRow,
   };
 }

@@ -3,8 +3,8 @@ import Header from "@/components/Header";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useApiClient } from "@/hooks/useApiClient";
 import { useAuth } from "@/context/AuthContext";
+import { request } from "@/lib/axiosUtils";
 
 export default function RootLayout({
   children,
@@ -14,7 +14,6 @@ export default function RootLayout({
   const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
-  const { request } = useApiClient();
   const { setUser } = useAuth();
   useEffect(() => {
     request({

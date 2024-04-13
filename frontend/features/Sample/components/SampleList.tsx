@@ -10,12 +10,13 @@ import { useGridForm } from "@/hooks/useGridForm";
 import Actions from "@/components/Actions";
 import { Sample } from "@/models/Sample";
 import { RequestParameters } from "@/lib/schemaHelper";
-import { useApiClient } from "@/hooks/useApiClient";
+import { request } from "@/lib/axiosUtils";
+import { useMessage } from "@/context/MessageContext";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
-  const { request } = useApiClient();
+  const { addMessage } = useMessage();
   const methods = useForm<SampleQuery>({
     resolver: yupResolver(
       yup.object({
@@ -47,9 +48,14 @@ function SampleList() {
       url: "/api/v1/sample/",
       method: "get",
       params: data,
-      isSearch: true,
     });
     setItemsSource(res.data);
+    if (res.data.length === 0) {
+      addMessage({
+        text: "検索結果が見つかりません",
+        type: "error",
+      });
+    }
   };
 
   const update = async () => {
@@ -59,9 +65,12 @@ function SampleList() {
         url: "/api/v1/sample/bulk_update/",
         method: "put",
         data: selectedItems,
-        isUpdate: true,
       });
       applyResults(res.data);
+      addMessage({
+        text: "更新が完了しました",
+        type: "success",
+      });
     } catch (error) {
       return;
     }

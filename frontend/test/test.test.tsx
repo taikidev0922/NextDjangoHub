@@ -38,3 +38,9 @@ test("wait", () => {
     expect(result).toBe(1000);
   });
 });
+
+test("モック関数は実行された", () => {
+  const mockFn = jest.fn();
+  mockFn();
+  expect(mockFn).toHaveBeenCalled();
+});

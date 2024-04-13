@@ -4,7 +4,7 @@ import React from "react";
 import { MdMenu, MdAccountCircle } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import Menu from "./Menu";
-import { useApiClient } from "@/hooks/useApiClient";
+import { request } from "@/lib/axiosUtils";
 
 type Props = {
   isNavOpen: boolean;
@@ -15,7 +15,6 @@ type Props = {
 function Header({ isNavOpen, setIsNavOpen, title }: Props) {
   const { user, logout } = useAuth();
   const router = useRouter();
-  const { request } = useApiClient();
 
   const toggleNav = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();

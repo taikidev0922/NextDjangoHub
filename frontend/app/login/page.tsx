@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import TextInput from "@/components/TextInput/TextInput";
 import Form from "@/components/Form";
 import Button from "@/components/Button";
-import { useApiClient } from "@/hooks/useApiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { request } from "@/lib/axiosUtils";
 
 type Inputs = {
   username: string;
@@ -23,7 +23,6 @@ const schema = yup
 
 export default function App() {
   const router = useRouter();
-  const { request } = useApiClient();
 
   const methods = useForm({
     resolver: yupResolver(schema),

@@ -13,15 +13,20 @@ export function useFetch() {
     config: AxiosConfigWrapper<Path, Method>
   ): Promise<schemaHelper.ResponseData<Path, Method>> => {
     startLoading();
-    const res = await request(config);
-    stopLoading();
-    if (Array.isArray(res.data) && res.data.length === 0) {
-      addMessage({
-        text: "検索結果が見つかりません",
-        type: "error",
-      });
+    try {
+      const res = await request(config);
+      stopLoading();
+      if (Array.isArray(res.data) && res.data.length === 0) {
+        addMessage({
+          text: "検索結果が見つかりません",
+          type: "error",
+        });
+      }
+      return res.data as schemaHelper.ResponseData<Path, Method>;
+    } catch (e) {
+      stopLoading();
+      return [] as schemaHelper.ResponseData<Path, Method>;
     }
-    return res.data as schemaHelper.ResponseData<Path, Method>;
   };
   return { fetch };
 }

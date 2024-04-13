@@ -10,15 +10,12 @@ import { useGridForm } from "@/hooks/useGridForm";
 import Actions from "@/components/Actions";
 import { Sample } from "@/models/Sample";
 import { RequestParameters } from "@/lib/schemaHelper";
-import { request } from "@/lib/axiosUtils";
-import { useMessage } from "@/context/MessageContext";
 import { useUpdate } from "@/hooks/useUpdate";
 import { useFetch } from "@/hooks/useFetch";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
-  const { addMessage } = useMessage();
   const { update } = useUpdate();
   const { fetch } = useFetch();
   const methods = useForm<SampleQuery>({
@@ -79,7 +76,7 @@ function SampleList() {
         <TextInput name="price" label="price" />
         <TextInput name="description" label="description" />
       </Form>
-      <GridForm {...register("test")} />
+      <GridForm {...register("サンプル一覧")} />
       <Actions>
         <Button onClick={onUpdate} className="btn-success">
           F2 更新

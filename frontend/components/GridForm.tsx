@@ -7,39 +7,26 @@ import {
 } from "@grapecity/wijmo.grid";
 import { GridColumn } from "@/hooks/useGridForm";
 import { FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
-import Button from "./Button";
 import Card from "./Card";
+import { useOperationType } from "@/context/OperationTypeContext";
+import { useEffect, useState } from "react";
 
 function GridForm({
   name,
   initGrid,
-  columns,
   addRow,
   deleteRow,
   copyRow,
 }: {
   name: string;
   initGrid: (e: FlexGridType) => void;
-  columns: GridColumn[];
   addRow: () => void;
   deleteRow: () => void;
   copyRow: () => void;
 }) {
-  const dataType = {
-    string: DataType.String,
-    number: DataType.Number,
-    boolean: DataType.Boolean,
-  };
   return (
     <Card title={name ?? "一覧"}>
-      <FlexGrid
-        initialized={initGrid}
-        columns={columns.map((column) => ({
-          ...column,
-          dataType: dataType[column.dataType],
-        }))}
-        style={{ height: 500 }}
-      >
+      <FlexGrid initialized={initGrid} style={{ height: 500 }}>
         <FlexGridCellTemplate
           cellType="RowHeader"
           template={(context: ICellTemplateContext) => {

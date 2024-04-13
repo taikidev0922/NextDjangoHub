@@ -21,16 +21,25 @@ export function useUpdate() {
       return [] as schemaHelper.ResponseData<Path, Method>;
     }
     startLoading();
-    const res = await request<Path, Method>({
-      ...config,
-      data: data,
-    });
-    stopLoading();
-    addMessage({
-      text: "更新が完了しました",
-      type: "success",
-    });
-    return res.data as schemaHelper.ResponseData<Path, Method>;
+    try {
+      const res = await request<Path, Method>({
+        ...config,
+        data: data,
+      });
+      stopLoading();
+      addMessage({
+        text: "更新が完了しました",
+        type: "success",
+      });
+      return res.data as schemaHelper.ResponseData<Path, Method>;
+    } catch (e) {
+      stopLoading();
+      addMessage({
+        text: "更新に失敗しました",
+        type: "error",
+      });
+      return [] as schemaHelper.ResponseData<Path, Method>;
+    }
   };
   return { update };
 }

@@ -48,14 +48,16 @@ export default function App() {
           <Button className="btn-primary w-full mt-4">Login</Button>
         }
       >
-        <h1 className="text-2xl font-bold">Login</h1>
-        <TextInput name="username" label="username" />
-        <TextInput
-          name="password"
-          label="password"
-          type="password"
-          className="mt-2"
-        />
+        <div className="flex flex-col items-center">
+          <h1 className="text-2xl font-bold">Login</h1>
+          <TextInput name="username" label="username" />
+          <TextInput
+            name="password"
+            label="password"
+            type="password"
+            className="mt-2"
+          />
+        </div>
       </Form>
     </section>
   );

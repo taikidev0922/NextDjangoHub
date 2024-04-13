@@ -12,8 +12,7 @@ const ApiClient = axios.create({ baseURL, headers });
 ApiClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
-    console.log(token);
-    if (token) {
+    if (token && config.url && !config.url.includes("/login")) {
       config.headers.Authorization = `JWT ${token}`;
     }
     return config;
@@ -23,7 +22,7 @@ ApiClient.interceptors.request.use(
 
 export type AxiosConfigWrapper<
   Path extends schemaHelper.UrlPaths,
-  Method extends schemaHelper.HttpMethods
+  Method extends schemaHelper.HttpMethods,
 > = {
   url: Path;
   method: Method & schemaHelper.HttpMethodsFilteredByPath<Path>;
@@ -33,7 +32,7 @@ export type AxiosConfigWrapper<
 
 export function request<
   Path extends schemaHelper.UrlPaths,
-  Method extends schemaHelper.HttpMethods
+  Method extends schemaHelper.HttpMethods,
 >(config: AxiosConfigWrapper<Path, Method>) {
   return ApiClient.request<
     schemaHelper.ResponseData<Path, Method>,

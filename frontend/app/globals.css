@@ -18,3 +18,10 @@
 .link {
   @apply p-4 hover:bg-slate-800;
 }
+
+.bg-editable {
+  background-color: #e6ffea;
+}
+.wj-alt.bg-editable {
+  background-color: #d8f0dc;
+}

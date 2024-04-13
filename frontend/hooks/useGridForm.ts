@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   FlexGrid as FlexGridType,
   ICellTemplateContext,
   CellType,
+  KeyAction,
 } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
 import _assign from "lodash/assign";
 import { useMessage } from "@/context/MessageContext";
+import { useOperationType } from "@/context/OperationTypeContext";
 
 export type GridColumn = {
   binding: string;
@@ -24,16 +26,86 @@ type GridItem<T> = T & {
   id: number | null;
 };
 
+const dataType = {
+  string: DataType.String,
+  number: DataType.Number,
+  boolean: DataType.Boolean,
+};
+
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
   const { addMessage } = useMessage();
+  const { isReadOnly, operationType, isRegistable } = useOperationType();
+
+  useEffect(() => {
+    resetGrid(grid);
+  }, [operationType]);
+
+  const resetGrid = (e: FlexGridType | undefined) => {
+    const rowHeader: GridColumn[] = [
+      {
+        binding: "isSelected",
+        header: " ",
+        dataType: "boolean",
+        width: 40,
+        cssClass: "wj-header",
+        allowSorting: false,
+      },
+      {
+        binding: "operation",
+        header: " ",
+        dataType: "string",
+        cssClass: "wj-header",
+        allowSorting: false,
+        isReadOnly: true,
+        width: 40,
+        cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
+          cell.style.textAlign = "center";
+          if (context.item.operation === "DELETE") {
+            cell.style.backgroundColor = "#FF0000";
+            return `<span class="text-white leading-none font-mono" style="font-size: 1.25rem;">D</span>`;
+          }
+          if (!context.item.isSelected) {
+            cell.style.backgroundColor = "";
+            return;
+          }
+          if (context.item.id) {
+            cell.style.backgroundColor = "#32CD32";
+            return `<span class="text-white font-mono" style="font-size: 1.25rem;">U</span>`;
+          }
+          if (!context.item.id) {
+            cell.style.backgroundColor = "#4169E1";
+            return `<span class="text-white font-mono" style="font-size: 1.25rem;">I</span>`;
+          }
+        },
+      },
+    ] as GridColumn[];
+    if (!e) return;
+    const itemsSource = Array.from({ length: isRegistable ? 10 : 0 }, () => ({
+      isSelected: false,
+    }));
+    e.initialize({
+      itemsSource,
+      autoGenerateColumns: false,
+      keyActionEnter: KeyAction.CycleEditable,
+      keyActionTab: KeyAction.CycleEditable,
+      columns: [
+        ...rowHeader,
+        ...columns.map((column) => ({
+          ...column,
+          isReadOnly,
+          cssClass: isReadOnly ? "" : "bg-editable",
+        })),
+      ].map((column) => ({
+        ...column,
+        dataType: dataType[column.dataType],
+      })),
+    });
+  };
 
   const initGrid = (e: FlexGridType) => {
     setGrid(e);
-    e.autoGenerateColumns = false;
-    e.itemsSource = Array.from({ length: 10 }, () => ({
-      isSelected: false,
-    }));
+    resetGrid(e);
     e.itemFormatter = (panel, r, c, cell) => {
       if (panel.cellType === CellType.ColumnHeader) {
         cell.style.textAlign = "left";
@@ -95,44 +167,6 @@ export function useGridForm<T>(columns: GridColumn[]) {
       addRow,
       deleteRow,
       copyRow,
-      columns: [
-        {
-          binding: "isSelected",
-          header: " ",
-          dataType: DataType.Boolean,
-          width: 40,
-          cssClass: "wj-header",
-          allowSorting: false,
-        },
-        {
-          binding: "operation",
-          header: " ",
-          dataType: DataType.String,
-          cssClass: "wj-header",
-          allowSorting: false,
-          width: 40,
-          cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
-            cell.style.textAlign = "center";
-            if (context.item.operation === "DELETE") {
-              cell.style.backgroundColor = "#FF0000";
-              return `<span class="text-white leading-none font-mono" style="font-size: 1.25rem;">D</span>`;
-            }
-            if (!context.item.isSelected) {
-              cell.style.backgroundColor = "";
-              return;
-            }
-            if (context.item.id) {
-              cell.style.backgroundColor = "#32CD32";
-              return `<span class="text-white font-mono" style="font-size: 1.25rem;">U</span>`;
-            }
-            if (!context.item.id) {
-              cell.style.backgroundColor = "#4169E1";
-              return `<span class="text-white font-mono" style="font-size: 1.25rem;">I</span>`;
-            }
-          },
-        },
-        ...columns,
-      ] as GridColumn[],
     };
   };
 

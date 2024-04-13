@@ -7,11 +7,13 @@ export default function TextInput({
   label,
   type = "text",
   className,
+  isReadOnly = false,
 }: {
   name: string;
   label: string;
   type?: string;
   className?: string;
+  isReadOnly?: boolean;
 }) {
   const {
     control,
@@ -28,6 +30,8 @@ export default function TextInput({
           control={control}
           render={({ field }) => (
             <ComboBox
+              isReadOnly={isReadOnly}
+              className={isReadOnly ? "" : "bg-editable"}
               textChanged={(e: ComboBoxType) => field.onChange(e.text)}
               id={name}
               inputType={type}

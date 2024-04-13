@@ -3,7 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useAuth } from "@/context/AuthContext";
 import * as yup from "yup";
 import { useRouter } from "next/navigation";
-import TextInput from "@/components/TextInput";
+import TextInput from "@/components/TextInput/TextInput";
 import Form from "@/components/Form";
 import Button from "@/components/Button";
 import { useApiClient } from "@/hooks/useApiClient";

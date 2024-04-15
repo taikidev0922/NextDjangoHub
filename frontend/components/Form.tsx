@@ -1,5 +1,5 @@
 import { FormProvider } from "react-hook-form";
-import Card from "./Card";
+import Card from "./Card/Card";
 import Button from "./Button";
 
 type PropType = {

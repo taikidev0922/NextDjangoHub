@@ -1,5 +1,5 @@
 import { Operation } from "@/context/OperationTypeContext";
-import Card from "./Card";
+import Card from "./Card/Card";
 
 const OperationRadio = ({
   operationType,

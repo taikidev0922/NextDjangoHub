@@ -7,7 +7,7 @@ import {
 } from "@grapecity/wijmo.grid";
 import { GridColumn } from "@/hooks/useGridForm";
 import { FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
-import Card from "./Card";
+import Card from "./Card/Card";
 import { useOperationType } from "@/context/OperationTypeContext";
 import { useEffect, useState } from "react";
 

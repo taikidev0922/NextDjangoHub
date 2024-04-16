@@ -7,7 +7,6 @@ import {
 } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
 import _assign from "lodash/assign";
-import { useMessage } from "@/context/MessageContext";
 import { useOperationType } from "@/context/OperationTypeContext";
 
 export type GridColumn = {
@@ -34,7 +33,6 @@ const dataType = {
 
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
-  const { addMessage } = useMessage();
   const { isReadOnly, operationType, isRegistable } = useOperationType();
 
   useEffect(() => {
@@ -171,7 +169,8 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const setItemsSource = (itemsSource: any[]) => {
-    grid!.itemsSource = itemsSource;
+    if (!grid) return;
+    grid.itemsSource = itemsSource;
   };
 
   const getSelectedItems = () => {

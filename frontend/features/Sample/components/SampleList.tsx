@@ -1,6 +1,6 @@
 "use client";
 import * as yup from "yup";
-import GridForm from "@/components/GridForm";
+import GridForm from "@/components/GridForm/GridForm";
 import Button from "@/components/Button";
 import TextInput from "@/components/TextInput/TextInput";
 import Form from "@/components/Form";

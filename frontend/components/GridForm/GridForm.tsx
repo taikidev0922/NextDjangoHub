@@ -1,15 +1,11 @@
 "use client";
 import { FlexGrid } from "@grapecity/wijmo.react.grid";
-import { DataType } from "@grapecity/wijmo";
 import {
   FlexGrid as FlexGridType,
   ICellTemplateContext,
 } from "@grapecity/wijmo.grid";
-import { GridColumn } from "@/hooks/useGridForm";
 import { FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
-import Card from "./Card/Card";
-import { useOperationType } from "@/context/OperationTypeContext";
-import { useEffect, useState } from "react";
+import Card from "../Card/Card";
 
 function GridForm({
   name,

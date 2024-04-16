@@ -9,7 +9,7 @@ function Card({
 }) {
   return (
     <div className="bg-white rounded-md border border-gray-500 p-3 mb-1">
-      <div className="text-gray-500 text-sm font-bold mb-2">{title}</div>
+      <h2 className="text-gray-500 text-sm font-bold mb-2">{title}</h2>
       <div className="text-gray-500 text-sm">{children}</div>
     </div>
   );

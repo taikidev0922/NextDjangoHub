@@ -1,6 +1,5 @@
 import { FormProvider } from "react-hook-form";
 import Card from "./Card/Card";
-import Button from "./Button";
 
 type PropType = {
   children: React.ReactNode;
@@ -20,6 +19,7 @@ export default function Form({
   if (!methods) {
     throw new Error("methods is required");
   }
+
   return (
     <FormProvider {...methods}>
       <Card title={title}>

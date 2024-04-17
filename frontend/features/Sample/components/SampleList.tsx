@@ -12,13 +12,19 @@ import { Sample } from "@/models/Sample";
 import { RequestParameters } from "@/lib/schemaHelper";
 import { useUpdate } from "@/hooks/useUpdate";
 import { useFetch } from "@/hooks/useFetch";
+import TextInput2 from "@/components/TextInput2/TextInput2";
+import Card from "@/components/Card/Card";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
   const { update } = useUpdate();
   const { fetch } = useFetch();
-  const methods = useForm<SampleQuery>({
+  const {
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm<SampleQuery>({
     resolver: yupResolver(
       yup.object({
         title: yup.string(),
@@ -66,16 +72,29 @@ function SampleList() {
 
   return (
     <section>
-      <Form
-        title="検索項目"
-        methods={methods}
-        onSubmit={search}
-        actionButton={<Button className="btn-primary">F1 検索</Button>}
-      >
-        <TextInput name="title" label="title" />
-        <TextInput name="price" label="price" />
-        <TextInput name="description" label="description" />
-      </Form>
+      <Card title="検索項目">
+        <form onSubmit={handleSubmit(search)} noValidate className="flex gap-4">
+          <TextInput2
+            name="title"
+            label="title"
+            control={control}
+            errors={errors}
+          />
+          <TextInput2
+            name="price"
+            label="price"
+            control={control}
+            errors={errors}
+          />
+          <TextInput2
+            name="description"
+            label="description"
+            control={control}
+            errors={errors}
+          />
+          <Button className="btn-primary">F1 検索</Button>
+        </form>
+      </Card>
       <GridForm {...register("サンプル一覧")} />
       <Actions>
         <Button onClick={onUpdate} className="btn-success">

@@ -2,7 +2,7 @@
 import { useAuth } from "@/context/AuthContext";
 import { request } from "@/lib/axiosUtils";
 import { useRouter } from "next/navigation";
-import LoginForm2, { FormData } from "./LoginForm2";
+import LoginForm from "./LoginForm";
 
 export default function Login() {
   const router = useRouter();
@@ -24,7 +24,7 @@ export default function Login() {
 
   return (
     <section className="flex justify-center items-center h-screen">
-      <LoginForm2 login={onSubmit} />
+      <LoginForm login={onSubmit} />
     </section>
   );
 }

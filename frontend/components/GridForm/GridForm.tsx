@@ -6,6 +6,8 @@ import {
 } from "@grapecity/wijmo.grid";
 import { FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
 import Card from "../Card/Card";
+import Button from "../Button";
+import { useEffect, useState } from "react";
 
 function GridForm({
   name,
@@ -20,35 +22,50 @@ function GridForm({
   deleteRow: () => void;
   copyRow: () => void;
 }) {
+  const [gridHeight, setGridHeight] = useState(window.innerHeight - 300);
+  useEffect(() => {
+    const top = document.querySelector(".flex-grid")?.getClientRects()[0].top;
+    const updateGridHeight = () => {
+      setGridHeight(window.innerHeight - 300);
+    };
+    window.addEventListener("resize", updateGridHeight);
+    updateGridHeight();
+    return () => window.removeEventListener("resize", updateGridHeight);
+  }, []);
   return (
     <Card title={name ?? "一覧"}>
-      <FlexGrid initialized={initGrid} style={{ height: 500 }}>
+      <FlexGrid
+        initialized={initGrid}
+        style={{ height: gridHeight }}
+        className="flex-grid"
+      >
         <FlexGridCellTemplate
           cellType="RowHeader"
+          d
           template={(context: ICellTemplateContext) => {
             return `${context.row.index + 1}`;
           }}
         />
       </FlexGrid>
-      <div className="flex">
-        <button className="flex items-center btn-grid-action" onClick={addRow}>
+      <div className="flex gap-1">
+        <Button className="flex items-center btn-grid-action" onClick={addRow}>
           Alt+(+) 行追加
-        </button>
-        <button
+        </Button>
+        <Button
           className="flex items-center btn-grid-action"
           onClick={deleteRow}
         >
           Alt+(-) 行削除
-        </button>
-        <button className="flex items-center btn-grid-action" onClick={copyRow}>
+        </Button>
+        <Button className="flex items-center btn-grid-action" onClick={copyRow}>
           Alt+C 行コピー
-        </button>
-        <button className="flex items-center btn-grid-action">
+        </Button>
+        <Button className="flex items-center btn-grid-action">
           Alt+F フィルター解除
-        </button>
-        <button className="flex items-center btn-grid-action">
+        </Button>
+        <Button className="flex items-center btn-grid-action">
           Alt+E Excel
-        </button>
+        </Button>
       </div>
     </Card>
   );

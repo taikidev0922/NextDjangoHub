@@ -1,24 +1,20 @@
 import { ComboBox } from "@grapecity/wijmo.react.input";
-import { Controller } from "react-hook-form";
 import { ComboBox as ComboBoxType } from "@grapecity/wijmo.input";
-import { useFormContext } from "react-hook-form";
-export default function TextInput({
-  name,
-  label,
-  type = "text",
-  className,
-  isReadOnly = false,
-}: {
+import { Controller } from "react-hook-form";
+type Props = {
+  control: any;
   name: string;
+  errors: any;
   label: string;
-  type?: string;
   className?: string;
-  isReadOnly?: boolean;
-}) {
-  const {
-    control,
-    formState: { errors },
-  } = useFormContext();
+};
+export default function TextInput({
+  control,
+  name,
+  errors,
+  label,
+  className,
+}: Props) {
   return (
     <section className={className}>
       <div className="flex flex-col">
@@ -30,17 +26,16 @@ export default function TextInput({
           control={control}
           render={({ field }) => (
             <ComboBox
-              isReadOnly={isReadOnly}
-              className={isReadOnly ? "" : "bg-editable"}
-              textChanged={(e: ComboBoxType) => field.onChange(e.text)}
               id={name}
-              inputType={type}
+              name={name}
+              className="bg-editable"
+              textChanged={(e: ComboBoxType) => field.onChange(e.text)}
+              text={field.value}
+              inputType="text"
             />
           )}
         />
-        <p className="text-red-500">
-          {errors[name]?.message?.toString() || ""}
-        </p>
+        {errors[name] && <span role="alert">{errors[name].message}</span>}
       </div>
     </section>
   );

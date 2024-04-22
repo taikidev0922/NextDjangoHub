@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { request } from "@/lib/axiosUtils";
-import { OperationTypeProvider } from "@/context/OperationTypeContext";
+import { OperationHeaderProvider } from "@/context/OperationHeaderContext";
+import { AccordionProvider } from "@/context/AccordionContext";
 
 export default function RootLayout({
   children,
@@ -36,12 +37,14 @@ export default function RootLayout({
     <LoadingProvider>
       <Header title="" isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
       <main
-        className={`px-3 py-1 h-screen bg-slate-100 transition-all duration-300 ease-in-out ${
+        className={`h-screen bg-slate-100 transition-all duration-300 ease-in-out ${
           isNavOpen ? "translate-x-64" : ""
         }`}
         style={{ width: isNavOpen ? "calc(100% - 16rem)" : "100%" }}
       >
-        <OperationTypeProvider>{children}</OperationTypeProvider>
+        <OperationHeaderProvider>
+          <AccordionProvider>{children}</AccordionProvider>
+        </OperationHeaderProvider>
       </main>
     </LoadingProvider>
   );

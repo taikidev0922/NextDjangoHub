@@ -3,6 +3,7 @@ type PropType = {
   className?: string;
   type?: "button" | "submit";
   name?: string;
+  disabled?: boolean;
   onClick?: () => void;
 };
 export default function Button({
@@ -11,10 +12,12 @@ export default function Button({
   type,
   onClick,
   name,
+  disabled,
 }: PropType) {
   return (
     <button
       className={`btn ${className}`}
+      disabled={disabled}
       type={type ?? "submit"}
       onClick={onClick}
       name={name}

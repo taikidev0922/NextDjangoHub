@@ -2,18 +2,16 @@
 import * as yup from "yup";
 import GridForm from "@/components/GridForm/GridForm";
 import Button from "@/components/Button";
-import TextInput from "@/components/TextInput/TextInput";
-import Form from "@/components/Form";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGridForm } from "@/hooks/useGridForm";
-import Actions from "@/components/Actions";
 import { Sample } from "@/models/Sample";
 import { RequestParameters } from "@/lib/schemaHelper";
 import { useUpdate } from "@/hooks/useUpdate";
 import { useFetch } from "@/hooks/useFetch";
-import TextInput2 from "@/components/TextInput2/TextInput2";
+import TextInput from "@/components/TextInput/TextInput";
 import Card from "@/components/Card/Card";
+import { OperationHeader } from "@/components/OperationHeader";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
@@ -71,37 +69,38 @@ function SampleList() {
   };
 
   return (
-    <section>
+    <div>
+      <OperationHeader onUpdate={onUpdate} />
       <Card title="検索項目">
-        <form onSubmit={handleSubmit(search)} noValidate className="flex gap-4">
-          <TextInput2
+        <form
+          onSubmit={handleSubmit(search)}
+          noValidate
+          className="flex gap-4 items-end"
+        >
+          <TextInput
             name="title"
             label="title"
             control={control}
             errors={errors}
           />
-          <TextInput2
+          <TextInput
             name="price"
             label="price"
             control={control}
             errors={errors}
           />
-          <TextInput2
+          <TextInput
             name="description"
             label="description"
             control={control}
             errors={errors}
           />
+          <div className="flex-grow"></div>
           <Button className="btn-primary">F1 検索</Button>
         </form>
       </Card>
       <GridForm {...register("サンプル一覧")} />
-      <Actions>
-        <Button onClick={onUpdate} className="btn-success">
-          F2 更新
-        </Button>
-      </Actions>
-    </section>
+    </div>
   );
 }
 

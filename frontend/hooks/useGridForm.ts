@@ -4,6 +4,7 @@ import {
   ICellTemplateContext,
   CellType,
   KeyAction,
+  SelectionMode,
 } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
 import _assign from "lodash/assign";
@@ -53,26 +54,24 @@ export function useGridForm<T>(columns: GridColumn[]) {
         binding: "operation",
         header: " ",
         dataType: "string",
-        cssClass: "wj-header",
         allowSorting: false,
-        isReadOnly: true,
         width: 40,
         cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
           cell.style.textAlign = "center";
           if (context.item.operation === "DELETE") {
-            cell.style.backgroundColor = "#FF0000";
+            cell.style.backgroundColor = "#e8383d";
             return `<span class="text-white leading-none font-mono" style="font-size: 1.25rem;">D</span>`;
           }
           if (!context.item.isSelected) {
-            cell.style.backgroundColor = "";
+            cell.style.backgroundColor = "#eee";
             return;
           }
           if (context.item.id) {
-            cell.style.backgroundColor = "#32CD32";
+            cell.style.backgroundColor = "#00a960";
             return `<span class="text-white font-mono" style="font-size: 1.25rem;">U</span>`;
           }
           if (!context.item.id) {
-            cell.style.backgroundColor = "#007BFF";
+            cell.style.backgroundColor = "#00a1e9";
             return `<span class="text-white font-mono" style="font-size: 1.25rem;">I</span>`;
           }
         },
@@ -87,6 +86,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
       autoGenerateColumns: false,
       keyActionEnter: KeyAction.CycleEditable,
       keyActionTab: KeyAction.CycleEditable,
+      selectionMode: SelectionMode.Row,
       columns: [
         ...rowHeader,
         ...columns.map((column) => ({
@@ -99,27 +99,51 @@ export function useGridForm<T>(columns: GridColumn[]) {
         dataType: dataType[column.dataType],
       })),
     });
+    e.select(0, 2);
   };
 
-  const initGrid = (e: FlexGridType) => {
-    setGrid(e);
-    resetGrid(e);
-    e.itemFormatter = (panel, r, c, cell) => {
+  const initGrid = (flexGrid: FlexGridType) => {
+    setGrid(flexGrid);
+    resetGrid(flexGrid);
+    flexGrid.itemFormatter = (panel, r, c, cell) => {
       if (panel.cellType === CellType.ColumnHeader) {
         cell.style.textAlign = "left";
       }
     };
-    e.itemsSourceChanged.addHandler(() => {
-      e.beginUpdate();
-      e.collectionView?.items.forEach((item) => {
+    flexGrid.itemsSourceChanged.addHandler(() => {
+      flexGrid.beginUpdate();
+      flexGrid.collectionView?.items.forEach((item) => {
         item.isSelected = false;
       });
-      e.endUpdate();
+      flexGrid.endUpdate();
     });
-    e.cellEditEnding.addHandler((_, args) => {
-      e.beginUpdate();
-      e.collectionView.items[args.row].isSelected = true;
-      e.endUpdate();
+    flexGrid.cellEditEnding.addHandler((_, args) => {
+      flexGrid.beginUpdate();
+      flexGrid.collectionView.items[args.row].isSelected = true;
+      flexGrid.endUpdate();
+    });
+    flexGrid.selectionChanged.addHandler((_, args) => {
+      if (args.col === 0) {
+        flexGrid.select(args.row, 2);
+      }
+    });
+    flexGrid.hostElement.addEventListener("keydown", (e) => {
+      if (
+        e.shiftKey &&
+        (e.key === "Enter" || e.key === "Tab") &&
+        flexGrid.selection.col === 1
+      ) {
+        flexGrid.select(flexGrid.selection.row - 1, columns.length + 1);
+      }
+      if (e.key === "ArrowLeft" && flexGrid.selection.col === 1) {
+        flexGrid.select(flexGrid.selection.row, 2);
+      }
+    });
+    flexGrid.hostElement.addEventListener("click", (e) => {
+      const hit = flexGrid.hitTest(e);
+      if (hit.col === 0 || hit.col === 1) {
+        flexGrid.select(hit.row, 2);
+      }
     });
   };
 

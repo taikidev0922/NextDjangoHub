@@ -37,7 +37,7 @@ export default function RootLayout({
     <LoadingProvider>
       <Header title="" isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
       <main
-        className={`h-screen bg-slate-100 transition-all duration-300 ease-in-out ${
+        className={`-slate-100 transition-all duration-300 ease-in-out ${
           isNavOpen ? "translate-x-64" : ""
         }`}
         style={{ width: isNavOpen ? "calc(100% - 16rem)" : "100%" }}

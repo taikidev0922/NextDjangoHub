@@ -46,7 +46,7 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
     registAndUpdate: "bg-blue-200",
     regist: "bg-blue-200",
     delete: "bg-red-200",
-    view: "bg-gray-300",
+    view: "",
     update: "bg-blue-200",
   };
   const editableOperations = ["registAndUpdate", "update"];

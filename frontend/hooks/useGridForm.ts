@@ -33,11 +33,11 @@ const dataType = {
 
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
-  const { isReadOnly, operationHeader, isRegistable } = useOperationHeader();
+  const { isReadOnly, operationType, isRegistable } = useOperationHeader();
 
   useEffect(() => {
     resetGrid(grid);
-  }, [operationHeader]);
+  }, [operationType]);
 
   const resetGrid = (e: FlexGridType | undefined) => {
     const rowHeader: GridColumn[] = [
@@ -72,7 +72,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
             return `<span class="text-white font-mono" style="font-size: 1.25rem;">U</span>`;
           }
           if (!context.item.id) {
-            cell.style.backgroundColor = "#4169E1";
+            cell.style.backgroundColor = "#007BFF";
             return `<span class="text-white font-mono" style="font-size: 1.25rem;">I</span>`;
           }
         },

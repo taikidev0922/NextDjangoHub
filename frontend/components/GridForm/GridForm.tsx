@@ -8,6 +8,7 @@ import { FlexGridCellTemplate } from "@grapecity/wijmo.react.grid";
 import Card from "../Card/Card";
 import Button from "../Button";
 import { useEffect, useState } from "react";
+import { useAccordion } from "@/context/AccordionContext";
 
 function GridForm({
   name,
@@ -22,15 +23,25 @@ function GridForm({
   deleteRow: () => void;
   copyRow: () => void;
 }) {
+  const { setResizeGrid } = useAccordion();
   const [gridHeight, setGridHeight] = useState(window.innerHeight - 300);
-  useEffect(() => {
+  const resizeGrid = () => {
     const top = document.querySelector(".flex-grid")?.getClientRects()[0].top;
     const updateGridHeight = () => {
-      setGridHeight(window.innerHeight - 300);
+      setGridHeight(window.innerHeight - (top ?? 0) - 50);
     };
     window.addEventListener("resize", updateGridHeight);
     updateGridHeight();
-    return () => window.removeEventListener("resize", updateGridHeight);
+  };
+  useEffect(() => {
+    setResizeGrid(() => {
+      return () => {
+        setTimeout(() => {
+          resizeGrid();
+        });
+      };
+    });
+    resizeGrid();
   }, []);
   return (
     <Card title={name ?? "一覧"}>

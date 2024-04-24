@@ -4,6 +4,7 @@ import {
 } from "@/context/OperationHeaderContext";
 import Button from "./Button";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { usePopup } from "@/context/PopupContext";
 
 const OperationRadio = ({
   operationType,
@@ -34,13 +35,14 @@ const OperationRadio = ({
 };
 
 export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
-  const { operationType, operationTypeList, setOperationType } =
+  const { operationType, operationTypeList, onChangeOperation } =
     useOperationHeader();
+  const { showPopup } = usePopup();
   useKeyboardShortcuts([
     {
-      keys: "F2",
+      keys: "F3",
       action: () => {
-        onUpdate();
+        handleUpdate();
       },
     },
   ]);
@@ -59,6 +61,14 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
     update: "bg-blue-200",
   };
   const editableOperations = ["registAndUpdate", "update"];
+  const handleUpdate = () => {
+    showPopup({
+      text: "更新しますか？",
+      onOk: () => {
+        onUpdate();
+      },
+    });
+  };
   return (
     <>
       <div
@@ -68,7 +78,7 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
           <OperationRadio
             key={operation}
             operationType={operationType}
-            setOperationType={setOperationType}
+            setOperationType={onChangeOperation}
             value={operation}
             label={operationLabels[operation]}
           />
@@ -77,12 +87,12 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
         <Button
           className="btn-success"
           disabled={!editableOperations.includes(operationType)}
-          onClick={onUpdate}
+          onClick={handleUpdate}
         >
-          F2 更新
+          F3 更新
         </Button>
         <Button className="btn-error" disabled={operationType !== "delete"}>
-          F3 削除
+          F4 削除
         </Button>
       </div>
     </>

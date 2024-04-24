@@ -7,7 +7,11 @@ export type OperationType =
   | "delete"
   | "view";
 
-const editableOperations: OperationType[] = ["registAndUpdate", "update"];
+const editableOperations: OperationType[] = [
+  "regist",
+  "registAndUpdate",
+  "update",
+];
 const registableOperations: OperationType[] = ["regist", "registAndUpdate"];
 
 export type OperationHeaderContextType = {
@@ -15,9 +19,9 @@ export type OperationHeaderContextType = {
   operationType: OperationType;
   isReadOnly: boolean;
   isRegistable: boolean;
-  handleChangeOperationHeader: (operationHeader: OperationType) => void;
+  isEditable: boolean;
+  onChangeOperation: (operationHeader: OperationType) => void;
   setOperationTypeList: (operations: OperationType[]) => void;
-  setOperationType: (operationType: OperationType) => void;
 };
 
 const OperationHeaderContext = createContext<OperationHeaderContextType>({
@@ -25,9 +29,9 @@ const OperationHeaderContext = createContext<OperationHeaderContextType>({
   operationType: "registAndUpdate",
   isReadOnly: false,
   isRegistable: false,
-  handleChangeOperationHeader: () => {},
+  isEditable: false,
+  onChangeOperation: () => {},
   setOperationTypeList: () => {},
-  setOperationType: () => {},
 });
 
 export const useOperationHeader = () => {
@@ -50,23 +54,28 @@ export const OperationHeaderProvider = ({
   const [isRegistable, setIsRegistable] = useState(
     registableOperations.includes(operationType)
   );
+  const [isEditable, setIsEditable] = useState(
+    editableOperations.includes(operationType)
+  );
 
-  const handleChangeOperationHeader = (operationHeader: OperationType) => {
+  const onChangeOperation = (operationHeader: OperationType) => {
     setOperationType(operationHeader);
     setIsReadOnly(!editableOperations.includes(operationHeader));
     setIsRegistable(registableOperations.includes(operationHeader));
+    setIsEditable(editableOperations.includes(operationHeader));
+    console.log(registableOperations, operationHeader);
   };
 
   return (
     <OperationHeaderContext.Provider
       value={{
         operationType,
-        handleChangeOperationHeader,
+        onChangeOperation,
         operationTypeList,
         setOperationTypeList,
         isReadOnly,
         isRegistable,
-        setOperationType,
+        isEditable,
       }}
     >
       {children}

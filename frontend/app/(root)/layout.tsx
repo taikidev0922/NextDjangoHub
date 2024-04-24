@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { request } from "@/lib/axiosUtils";
 import { OperationHeaderProvider } from "@/context/OperationHeaderContext";
 import { AccordionProvider } from "@/context/AccordionContext";
+import { PopupProvider } from "@/context/PopupContext";
 
 export default function RootLayout({
   children,
@@ -43,7 +44,9 @@ export default function RootLayout({
         style={{ width: isNavOpen ? "calc(100% - 16rem)" : "100%" }}
       >
         <OperationHeaderProvider>
-          <AccordionProvider>{children}</AccordionProvider>
+          <AccordionProvider>
+            <PopupProvider>{children}</PopupProvider>
+          </AccordionProvider>
         </OperationHeaderProvider>
       </main>
     </LoadingProvider>

@@ -16,7 +16,7 @@
   @apply btn bg-red-600 hover:bg-red-800 text-white;
 }
 .btn-grid-action {
-  @apply bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded;
+  @apply btn bg-teal-600 hover:bg-teal-800 text-white;
 }
 .link {
   @apply p-4 hover:bg-slate-800;

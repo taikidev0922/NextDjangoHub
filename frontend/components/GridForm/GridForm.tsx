@@ -9,6 +9,8 @@ import Card from "../Card/Card";
 import Button from "../Button";
 import { useEffect, useState } from "react";
 import { useAccordion } from "@/context/AccordionContext";
+import { isEditable } from "@testing-library/user-event/dist/cjs/utils/index.js";
+import { useOperationHeader } from "@/context/OperationHeaderContext";
 
 function GridForm({
   name,
@@ -28,6 +30,7 @@ function GridForm({
   exportExcel: () => void;
 }) {
   const { setResizeGrid } = useAccordion();
+  const { isEditable } = useOperationHeader();
   const [gridHeight, setGridHeight] = useState(window.innerHeight - 300);
   const resizeGrid = () => {
     const top = document.querySelector(".flex-grid")?.getClientRects()[0].top;
@@ -63,16 +66,25 @@ function GridForm({
         />
       </FlexGrid>
       <div className="flex gap-1">
-        <Button className="flex items-center btn-grid-action" onClick={addRow}>
+        <Button
+          className="flex items-center btn-grid-action"
+          onClick={addRow}
+          disabled={!isEditable}
+        >
           Alt+(+) 行追加
         </Button>
         <Button
           className="flex items-center btn-grid-action"
           onClick={deleteRow}
+          disabled={!isEditable}
         >
           Alt+(-) 行削除
         </Button>
-        <Button className="flex items-center btn-grid-action" onClick={copyRow}>
+        <Button
+          className="flex items-center btn-grid-action"
+          onClick={copyRow}
+          disabled={!isEditable}
+        >
           Alt+C 行コピー
         </Button>
         <Button

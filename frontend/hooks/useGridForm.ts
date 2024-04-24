@@ -117,6 +117,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
     const itemsSource = Array.from({ length: isRegistable ? 10 : 0 }, () => ({
       isSelected: false,
     }));
+    console.log(isRegistable);
     e.initialize({
       itemsSource,
       autoGenerateColumns: false,
@@ -195,6 +196,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
       {} as GridItem<T>
     );
     grid?.collectionView.refresh();
+    grid?.focus();
     grid?.select(grid.selection.row + 1, grid.selection.col);
   };
 

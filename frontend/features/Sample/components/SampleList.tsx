@@ -13,12 +13,21 @@ import TextInput from "@/components/TextInput/TextInput";
 import Card from "@/components/Card/Card";
 import { OperationHeader } from "@/components/OperationHeader";
 import NumberInput from "@/components/NumberInput/NumberInput";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
 function SampleList() {
   const { update } = useUpdate();
   const { fetch } = useFetch();
+  useKeyboardShortcuts([
+    {
+      keys: "F1",
+      action: () => {
+        handleSubmit(search)();
+      },
+    },
+  ]);
   const {
     handleSubmit,
     formState: { errors },

@@ -12,6 +12,7 @@ import { useFetch } from "@/hooks/useFetch";
 import TextInput from "@/components/TextInput/TextInput";
 import Card from "@/components/Card/Card";
 import { OperationHeader } from "@/components/OperationHeader";
+import NumberInput from "@/components/NumberInput/NumberInput";
 
 type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
 
@@ -26,10 +27,20 @@ function SampleList() {
     resolver: yupResolver(
       yup.object({
         title: yup.string(),
-        price: yup.number(),
+        price: yup
+          .number()
+          .optional()
+          .transform((value, originalValue) =>
+            isNaN(Number(originalValue)) ? undefined : Number(originalValue)
+          ),
         description: yup.string(),
       })
     ),
+    defaultValues: {
+      title: undefined,
+      price: undefined,
+      description: undefined,
+    },
   });
 
   const { register, setItemsSource, getSelectedItems, applyResults } =
@@ -72,18 +83,14 @@ function SampleList() {
     <div>
       <OperationHeader onUpdate={onUpdate} />
       <Card title="検索項目">
-        <form
-          onSubmit={handleSubmit(search)}
-          noValidate
-          className="flex gap-4 items-end"
-        >
+        <form noValidate className="flex gap-4 items-end">
           <TextInput
             name="title"
             label="title"
             control={control}
             errors={errors}
           />
-          <TextInput
+          <NumberInput
             name="price"
             label="price"
             control={control}
@@ -96,7 +103,9 @@ function SampleList() {
             errors={errors}
           />
           <div className="flex-grow"></div>
-          <Button className="btn-primary">F1 検索</Button>
+          <Button className="btn-primary" onClick={handleSubmit(search)}>
+            F1 検索
+          </Button>
         </form>
       </Card>
       <GridForm {...register("サンプル一覧")} />

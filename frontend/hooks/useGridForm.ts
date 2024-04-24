@@ -7,8 +7,11 @@ import {
   SelectionMode,
 } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
+import { FlexGridFilter } from "@grapecity/wijmo.grid.filter";
 import _assign from "lodash/assign";
 import { useOperationHeader } from "@/context/OperationHeaderContext";
+import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
+import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
 
 export type GridColumn = {
   binding: string;
@@ -34,7 +37,40 @@ const dataType = {
 
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
+  const [filter, setFilter] = useState<FlexGridFilter>();
   const { isReadOnly, operationType, isRegistable } = useOperationHeader();
+  useKeyboardShortcuts([
+    {
+      keys: "Alt+;",
+      action: () => {
+        addRow();
+      },
+    },
+    {
+      keys: "Alt+-",
+      action: () => {
+        deleteRow();
+      },
+    },
+    {
+      keys: "Alt+c",
+      action: () => {
+        copyRow();
+      },
+    },
+    {
+      keys: "Alt+f",
+      action: () => {
+        clearFilter();
+      },
+    },
+    {
+      keys: "Alt+q",
+      action: () => {
+        exportExcel();
+      },
+    },
+  ]);
 
   useEffect(() => {
     resetGrid(grid);
@@ -86,24 +122,29 @@ export function useGridForm<T>(columns: GridColumn[]) {
       autoGenerateColumns: false,
       keyActionEnter: KeyAction.CycleEditable,
       keyActionTab: KeyAction.CycleEditable,
-      selectionMode: SelectionMode.Row,
+      // selectionMode: SelectionMode.Row,
       columns: [
         ...rowHeader,
         ...columns.map((column) => ({
           ...column,
           isReadOnly,
           cssClass: isReadOnly ? "" : "bg-editable",
+          isRequired: false,
         })),
       ].map((column) => ({
         ...column,
         dataType: dataType[column.dataType],
       })),
     });
-    e.select(0, 2);
   };
 
   const initGrid = (flexGrid: FlexGridType) => {
     setGrid(flexGrid);
+    setFilter(
+      new FlexGridFilter(flexGrid, {
+        filterColumns: columns.map((column) => column.binding),
+      })
+    );
     resetGrid(flexGrid);
     flexGrid.itemFormatter = (panel, r, c, cell) => {
       if (panel.cellType === CellType.ColumnHeader) {
@@ -182,6 +223,25 @@ export function useGridForm<T>(columns: GridColumn[]) {
     grid?.endUpdate();
   };
 
+  const clearFilter = () => {
+    filter?.clear();
+  };
+
+  const exportExcel = () => {
+    FlexGridXlsxConverter.saveAsync(
+      grid as FlexGridType,
+      {
+        includeColumnHeaders: true,
+        includeStyles: false,
+        includeRowHeaders: false,
+        includeColumns: function (column) {
+          return !["isSelected", "operation"].includes(column.binding ?? "");
+        },
+      },
+      "FlexGrid.xlsx"
+    );
+  };
+
   const register = (name: string) => {
     return {
       name,
@@ -189,6 +249,8 @@ export function useGridForm<T>(columns: GridColumn[]) {
       addRow,
       deleteRow,
       copyRow,
+      clearFilter,
+      exportExcel,
     };
   };
 

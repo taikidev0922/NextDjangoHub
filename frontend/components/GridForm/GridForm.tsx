@@ -16,12 +16,16 @@ function GridForm({
   addRow,
   deleteRow,
   copyRow,
+  clearFilter,
+  exportExcel,
 }: {
   name: string;
   initGrid: (e: FlexGridType) => void;
   addRow: () => void;
   deleteRow: () => void;
   copyRow: () => void;
+  clearFilter: () => void;
+  exportExcel: () => void;
 }) {
   const { setResizeGrid } = useAccordion();
   const [gridHeight, setGridHeight] = useState(window.innerHeight - 300);
@@ -71,11 +75,17 @@ function GridForm({
         <Button className="flex items-center btn-grid-action" onClick={copyRow}>
           Alt+C 行コピー
         </Button>
-        <Button className="flex items-center btn-grid-action">
+        <Button
+          className="flex items-center btn-grid-action"
+          onClick={clearFilter}
+        >
           Alt+F フィルター解除
         </Button>
-        <Button className="flex items-center btn-grid-action">
-          Alt+E Excel
+        <Button
+          className="flex items-center btn-grid-action"
+          onClick={exportExcel}
+        >
+          Alt+Q Excel
         </Button>
       </div>
     </Card>

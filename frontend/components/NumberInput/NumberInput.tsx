@@ -1,5 +1,5 @@
-import { ComboBox } from "@grapecity/wijmo.react.input";
-import { ComboBox as ComboBoxType } from "@grapecity/wijmo.input";
+import { InputNumber } from "@grapecity/wijmo.react.input";
+import { InputNumber as InputNumberType } from "@grapecity/wijmo.input";
 import { Controller } from "react-hook-form";
 type Props = {
   control: any;
@@ -15,7 +15,6 @@ export default function TextInput({
   errors,
   label,
   className,
-  inputType = "text",
 }: Props) {
   return (
     <section className={className}>
@@ -27,13 +26,16 @@ export default function TextInput({
           name={name}
           control={control}
           render={({ field }) => (
-            <ComboBox
+            <InputNumber
+              isRequired={false}
               id={name}
               name={name}
               className="bg-editable"
-              textChanged={(e: ComboBoxType) => field.onChange(e.text)}
-              text={field.value}
-              inputType={inputType}
+              valueChanged={(e: InputNumberType) => {
+                field.onChange(e.value ?? NaN);
+              }}
+              value={field.value}
+              text=""
             />
           )}
         />

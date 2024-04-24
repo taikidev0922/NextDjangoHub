@@ -18,7 +18,7 @@ export default function Button({
     <button
       className={`btn ${className}`}
       disabled={disabled}
-      type={type ?? "submit"}
+      type={type ?? "button"}
       onClick={onClick}
       name={name}
     >

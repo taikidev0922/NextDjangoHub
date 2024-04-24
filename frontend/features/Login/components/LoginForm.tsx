@@ -3,6 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import yup from "@/lib/yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@/components/TextInput/TextInput";
+import Button from "@/components/Button";
 
 export type FormData = {
   username: string;
@@ -55,7 +56,9 @@ export default function LoginForm({
         label="パスワード"
       />
 
-      <button type="submit">SUBMIT</button>
+      <Button type="submit" className="btn-primary w-full mt-5">
+        Login
+      </Button>
     </form>
   );
 }

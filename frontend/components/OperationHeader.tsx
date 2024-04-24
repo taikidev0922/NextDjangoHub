@@ -3,6 +3,7 @@ import {
   useOperationHeader,
 } from "@/context/OperationHeaderContext";
 import Button from "./Button";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
 const OperationRadio = ({
   operationType,
@@ -35,6 +36,14 @@ const OperationRadio = ({
 export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
   const { operationType, operationTypeList, setOperationType } =
     useOperationHeader();
+  useKeyboardShortcuts([
+    {
+      keys: "F2",
+      action: () => {
+        onUpdate();
+      },
+    },
+  ]);
   const operationLabels: Record<OperationType, string> = {
     registAndUpdate: "登録・更新",
     regist: "登録",

@@ -4,6 +4,7 @@ import { Popup } from "@grapecity/wijmo.react.input";
 import Button from "@/components/Button";
 
 type PopupSender = {
+  type: "confirm" | "error" | "info" | "warning";
   text: string;
   onOk?: () => void;
   onCancel?: () => void;
@@ -25,11 +26,16 @@ export const usePopup = () => {
 };
 
 export const PopupProvider = ({ children }: { children: ReactNode }) => {
+  const [popupState, setPopupState] = useState<PopupSender>({
+    type: "info",
+    text: "",
+    onOk: undefined,
+    onCancel: undefined,
+  });
   const [popup, setPopup] = useState<WijmoPopup>();
-  const [text, setText] = useState<string>("");
 
   const showPopup = (sender: PopupSender) => {
-    setText(sender.text);
+    setPopupState(sender);
     popup?.show(true, (e: WijmoPopup) => {
       if (e.dialogResult == "wj-hide-ok") {
         sender.onOk?.();
@@ -48,10 +54,27 @@ export const PopupProvider = ({ children }: { children: ReactNode }) => {
   return (
     <PopupContext.Provider value={{ popup, showPopup }}>
       <Popup id="frmLoginPopup" initialized={initPopup} className="w-96">
-        <div className="text-lg font-semibold bg-green-700 text-white pl-2 pr-2">
-          確認
-        </div>
-        <div className="text-sm m-3 break-words">{text}</div>
+        {popupState.type === "confirm" && (
+          <div className="text-lg font-semibold bg-green-700 text-white pl-2 pr-2">
+            確認
+          </div>
+        )}
+        {popupState.type === "info" && (
+          <div className="text-lg font-semibold bg-blue-700 text-white pl-2 pr-2">
+            情報
+          </div>
+        )}
+        {popupState.type === "warning" && (
+          <div className="text-lg font-semibold bg-yellow-700 text-white pl-2 pr-2">
+            警告
+          </div>
+        )}
+        {popupState.type === "error" && (
+          <div className="text-lg font-semibold bg-red-700 text-white pl-2 pr-2">
+            エラー
+          </div>
+        )}
+        <div className="text-sm m-3 break-words">{popupState.text}</div>
         <div className="flex justify-end my-1">
           <Button className="btn btn-primary wj-hide-ok">はい</Button>
           <Button className="btn wj-hide-cancel">いいえ</Button>

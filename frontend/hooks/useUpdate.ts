@@ -38,7 +38,7 @@ export function useUpdate() {
         text: "更新に失敗しました",
         type: "error",
       });
-      return [] as schemaHelper.ResponseData<Path, Method>;
+      return e?.response.data as schemaHelper.ResponseData<Path, Method>;
     }
   };
   return { update };

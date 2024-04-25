@@ -81,11 +81,12 @@ function SampleList() {
   };
 
   const onUpdate = async () => {
-    const results = await update(
+    await update(
       { url: "/api/v1/sample/bulk_update/", method: "put" },
       getSelectedItems()
-    );
-    applyResults(results);
+    ).then((results) => {
+      applyResults(results);
+    });
   };
 
   return (

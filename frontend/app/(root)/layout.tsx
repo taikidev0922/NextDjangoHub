@@ -7,7 +7,6 @@ import { useAuth } from "@/context/AuthContext";
 import { request } from "@/lib/axiosUtils";
 import { OperationHeaderProvider } from "@/context/OperationHeaderContext";
 import { AccordionProvider } from "@/context/AccordionContext";
-import { PopupProvider } from "@/context/PopupContext";
 
 export default function RootLayout({
   children,
@@ -18,6 +17,7 @@ export default function RootLayout({
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const { setUser } = useAuth();
+
   useEffect(() => {
     request({
       url: "/api/v1/auth/user/",
@@ -44,9 +44,7 @@ export default function RootLayout({
         style={{ width: isNavOpen ? "calc(100% - 16rem)" : "100%" }}
       >
         <OperationHeaderProvider>
-          <AccordionProvider>
-            <PopupProvider>{children}</PopupProvider>
-          </AccordionProvider>
+          <AccordionProvider>{children}</AccordionProvider>
         </OperationHeaderProvider>
       </main>
     </LoadingProvider>

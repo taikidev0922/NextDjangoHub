@@ -4,6 +4,7 @@ import "@grapecity/wijmo.styles/wijmo.css";
 import "./globals.css";
 import { useEffect } from "react";
 import { MessageProvider } from "@/context/MessageContext";
+import { PopupProvider } from "@/context/PopupContext";
 
 export default function RootLayout({
   children,
@@ -23,11 +24,13 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <AuthProvider>
-          <MessageProvider>
-            <body>{children}</body>
-          </MessageProvider>
-        </AuthProvider>
+        <PopupProvider>
+          <AuthProvider>
+            <MessageProvider>
+              <body>{children}</body>
+            </MessageProvider>
+          </AuthProvider>
+        </PopupProvider>
       </body>
     </html>
   );

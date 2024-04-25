@@ -64,7 +64,7 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
   const handleUpdate = () => {
     showPopup({
       text: "更新しますか？",
-      type: "error",
+      type: "confirm",
       onOk: () => {
         onUpdate();
       },

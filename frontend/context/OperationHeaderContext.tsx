@@ -1,3 +1,4 @@
+"use client";
 import { createContext, useContext, useState } from "react";
 
 export type OperationType =
@@ -63,7 +64,6 @@ export const OperationHeaderProvider = ({
     setIsReadOnly(!editableOperations.includes(operationHeader));
     setIsRegistable(registableOperations.includes(operationHeader));
     setIsEditable(editableOperations.includes(operationHeader));
-    console.log(registableOperations, operationHeader);
   };
 
   return (

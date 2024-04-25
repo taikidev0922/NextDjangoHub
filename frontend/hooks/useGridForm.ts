@@ -4,14 +4,16 @@ import {
   ICellTemplateContext,
   CellType,
   KeyAction,
-  SelectionMode,
 } from "@grapecity/wijmo.grid";
 import { DataType } from "@grapecity/wijmo";
+import { CellMaker } from "@grapecity/wijmo.grid.cellmaker";
 import { FlexGridFilter } from "@grapecity/wijmo.grid.filter";
 import _assign from "lodash/assign";
 import { useOperationHeader } from "@/context/OperationHeaderContext";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
+import { getIcon } from "@/utils/getIcon";
+import { usePopup } from "@/context/PopupContext";
 
 export type GridColumn = {
   binding: string;
@@ -38,6 +40,8 @@ const dataType = {
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
   const [filter, setFilter] = useState<FlexGridFilter>();
+  console.log("初期化１");
+  const { showPopup } = usePopup();
   const { isReadOnly, operationType, isRegistable } = useOperationHeader();
   useKeyboardShortcuts([
     {
@@ -112,12 +116,40 @@ export function useGridForm<T>(columns: GridColumn[]) {
           }
         },
       },
+      {
+        binding: "results",
+        header: " ",
+        dataType: "string",
+        cssClass: "wj-header flex items-center",
+        width: 40,
+        cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
+          return CellMaker.makeButton({
+            text: getIcon(
+              context.item.results?.some((result) => result.type === "error")
+                ? "error"
+                : context.item.results?.some(
+                      (result) => result.type === "warning"
+                    )
+                  ? "warning"
+                  : undefined
+            ),
+            click: (e: MouseEvent, ctx: ICellTemplateContext) => {
+              showPopup({
+                type: "error",
+                text: "test",
+              });
+            },
+            attributes: {
+              class: "text-orange-500",
+            },
+          })(context, cell);
+        },
+      },
     ] as GridColumn[];
     if (!e) return;
     const itemsSource = Array.from({ length: isRegistable ? 10 : 0 }, () => ({
       isSelected: false,
     }));
-    console.log(isRegistable);
     e.initialize({
       itemsSource,
       autoGenerateColumns: false,
@@ -230,6 +262,10 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const exportExcel = () => {
+    showPopup({
+      type: "error",
+      text: "test",
+    });
     FlexGridXlsxConverter.saveAsync(
       grid as FlexGridType,
       {
@@ -271,16 +307,32 @@ export function useGridForm<T>(columns: GridColumn[]) {
     return selectedItems ?? [];
   };
 
-  const applyResults = (results: any[]) => {
+  const applyResults = (response: any[]) => {
     grid?.beginUpdate();
-    results?.forEach((res) => {
-      const target = grid?.collectionView.items.find(
-        (item) => item.cookie === res.cookie
-      );
-      if (!target) return;
-      target.isSelected = false;
-      _assign(target, res);
+    grid?.collectionView.items.forEach((item) => {
+      item.results = undefined;
     });
+    if (!response.some((res) => res.results && res.results.length > 0)) {
+      response?.forEach((res) => {
+        const target = grid?.collectionView.items.find(
+          (item) => item.cookie === res.cookie
+        );
+        if (!target) return;
+        target.isSelected = false;
+        _assign(target, res);
+      });
+    } else {
+      response?.forEach((res) => {
+        const target = grid?.collectionView.items.find(
+          (item) => item.cookie === res.cookie
+        );
+        if (!target) return;
+        if (res.results && res.results.length > 0) {
+          target.results = res.results;
+          return;
+        }
+      });
+    }
     grid?.endUpdate();
   };
 

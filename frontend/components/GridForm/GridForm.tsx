@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useAccordion } from "@/context/AccordionContext";
 import { isEditable } from "@testing-library/user-event/dist/cjs/utils/index.js";
 import { useOperationHeader } from "@/context/OperationHeaderContext";
+import { usePopup } from "@/context/PopupContext";
 
 function GridForm({
   name,
@@ -31,6 +32,7 @@ function GridForm({
 }) {
   const { setResizeGrid } = useAccordion();
   const { isEditable } = useOperationHeader();
+  const { showPopup } = usePopup();
   const [gridHeight, setGridHeight] = useState(window.innerHeight - 300);
   const resizeGrid = () => {
     const top = document.querySelector(".flex-grid")?.getClientRects()[0].top;
@@ -52,6 +54,16 @@ function GridForm({
   }, []);
   return (
     <Card title={name ?? "一覧"}>
+      <Button
+        onClick={() =>
+          showPopup({
+            type: "confirm",
+            text: "test",
+          })
+        }
+      >
+        button
+      </Button>
       <FlexGrid
         initialized={initGrid}
         style={{ height: gridHeight }}

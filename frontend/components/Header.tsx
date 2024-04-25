@@ -36,7 +36,6 @@ function Header({ isNavOpen, setIsNavOpen, title }: Props) {
         }
       },
     },
-    { label: "bbb", onClick: () => {} },
   ];
 
   return (

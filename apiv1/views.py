@@ -42,7 +42,11 @@ class SampleViewSet(viewsets.ModelViewSet):
                 response_data.append({'cookie': cookie_value, 'results': formatted_errors})
             return Response(response_data, status=status.HTTP_400_BAD_REQUEST)
 
-        # 成功時のレスポンスデータ構造を調整
-        response_data = [{'cookie': data.get('cookie'), 'results': []} for data in request.data]
-        return Response(response_data, status=status.HTTP_200_OK)
+        sample_data = [{k: v for k, v in attrs.items() if hasattr(Sample, k)} for attrs in request.data]
+        samples = [Sample(**data) for data in sample_data]
+        result = Sample.objects.bulk_create(samples,update_conflicts=True,unique_fields=['id'],update_fields=['title','description','price'])
+        returnSerializer = BulkSampleListSerializer(data=result)
+        returnSerializer.is_valid()
+        response_data = [{**item, 'cookie': request.data[index]['cookie']} for index, item in enumerate(returnSerializer.data)]
+        return Response(response_data,status=status.HTTP_200_OK)
 

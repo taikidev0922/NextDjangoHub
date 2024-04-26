@@ -12,7 +12,13 @@ class SampleSerializer(serializers.ModelSerializer):
             'title':{
                 'max_length':10,
                 'error_messages':{
-                    'blank':'タイトルは空にできません。',
+                    'blank':'タイトルは必須です',
+                }
+            },
+            'price':{
+                'error_messages':{
+                    'null':'価格は必須です',
+                    'blank':'価格は必須です',
                 }
             },
             'description':{

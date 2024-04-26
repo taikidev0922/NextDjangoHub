@@ -13,7 +13,6 @@ import { useOperationHeader } from "@/context/OperationHeaderContext";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
 import { getIcon } from "@/utils/getIcon";
-import { usePopup } from "@/context/PopupContext";
 
 export type GridColumn = {
   binding: string;
@@ -40,8 +39,6 @@ const dataType = {
 export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
   const [filter, setFilter] = useState<FlexGridFilter>();
-  console.log("初期化１");
-  const { showPopup } = usePopup();
   const { isReadOnly, operationType, isRegistable } = useOperationHeader();
   useKeyboardShortcuts([
     {
@@ -134,10 +131,6 @@ export function useGridForm<T>(columns: GridColumn[]) {
                   : undefined
             ),
             click: (e: MouseEvent, ctx: ICellTemplateContext) => {
-              showPopup({
-                type: "error",
-                text: "test",
-              });
             },
             attributes: {
               class: "text-orange-500",
@@ -262,10 +255,6 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const exportExcel = () => {
-    showPopup({
-      type: "error",
-      text: "test",
-    });
     FlexGridXlsxConverter.saveAsync(
       grid as FlexGridType,
       {
@@ -308,6 +297,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const applyResults = (response: any[]) => {
+    if (response.length === 0) return;
     grid?.beginUpdate();
     grid?.collectionView.items.forEach((item) => {
       item.results = undefined;

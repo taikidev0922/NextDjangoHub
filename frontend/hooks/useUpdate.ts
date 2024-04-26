@@ -1,10 +1,10 @@
 import { useLoading } from "@/context/LoadingContext";
-import { useMessage } from "@/context/MessageContext";
+import { useToast } from "@/context/ToastContext";
 import { AxiosConfigWrapper, request } from "@/lib/axiosUtils";
 import * as schemaHelper from "@/lib/schemaHelper";
 
 export function useUpdate() {
-  const { addMessage } = useMessage();
+  const { showToast } = useToast();
   const { startLoading, stopLoading } = useLoading();
   const update = async <
     Path extends schemaHelper.UrlPaths,
@@ -14,7 +14,7 @@ export function useUpdate() {
     data: schemaHelper.RequestData<Path, Method>
   ): Promise<schemaHelper.ResponseData<Path, Method>> => {
     if (Array.isArray(data) && data.length === 0) {
-      addMessage({
+      showToast({
         text: "明細を選択してください",
         type: "error",
       });
@@ -27,14 +27,14 @@ export function useUpdate() {
         data: data,
       });
       stopLoading();
-      addMessage({
+      showToast({
         text: "更新が完了しました",
         type: "success",
       });
       return res.data as schemaHelper.ResponseData<Path, Method>;
     } catch (e) {
       stopLoading();
-      addMessage({
+      showToast({
         text: "更新に失敗しました",
         type: "error",
       });

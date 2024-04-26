@@ -3,8 +3,8 @@ import { AuthProvider } from "@/context/AuthContext";
 import "@grapecity/wijmo.styles/wijmo.css";
 import "./globals.css";
 import { useEffect } from "react";
-import { MessageProvider } from "@/context/MessageContext";
-import { PopupProvider } from "@/context/PopupContext";
+import { ToastProvider } from "@/context/ToastContext";
+import { DialogProvider } from "@/context/DialogContext";
 
 export default function RootLayout({
   children,
@@ -24,13 +24,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
-        <PopupProvider>
-          <AuthProvider>
-            <MessageProvider>
-              <body>{children}</body>
-            </MessageProvider>
-          </AuthProvider>
-        </PopupProvider>
+        <AuthProvider>
+          <DialogProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </DialogProvider>
+        </AuthProvider>
       </body>
     </html>
   );

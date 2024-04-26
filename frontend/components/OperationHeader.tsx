@@ -4,7 +4,7 @@ import {
 } from "@/context/OperationHeaderContext";
 import Button from "./Button";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
-import { usePopup } from "@/context/PopupContext";
+import { useDialog } from "@/context/DialogContext";
 
 const OperationRadio = ({
   operationType,
@@ -37,7 +37,7 @@ const OperationRadio = ({
 export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
   const { operationType, operationTypeList, onChangeOperation } =
     useOperationHeader();
-  const { showPopup } = usePopup();
+  const { showDialog } = useDialog();
   useKeyboardShortcuts([
     {
       keys: "F3",
@@ -62,12 +62,10 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
   };
   const editableOperations = ["registAndUpdate", "update"];
   const handleUpdate = () => {
-    showPopup({
-      text: "更新しますか？",
-      type: "confirm",
-      onOk: () => {
+    showDialog({ text: "更新しますか？", type: "confirm" }).then((value) => {
+      if (value.isConfirmed) {
         onUpdate();
-      },
+      }
     });
   };
   return (

@@ -1,10 +1,10 @@
 import { useLoading } from "@/context/LoadingContext";
-import { useMessage } from "@/context/MessageContext";
+import { useToast } from "@/context/ToastContext";
 import { AxiosConfigWrapper, request } from "@/lib/axiosUtils";
 import * as schemaHelper from "@/lib/schemaHelper";
 
 export function useFetch() {
-  const { addMessage } = useMessage();
+  const { showToast } = useToast();
   const { startLoading, stopLoading } = useLoading();
   const fetch = async <
     Path extends schemaHelper.UrlPaths,
@@ -17,7 +17,7 @@ export function useFetch() {
       const res = await request(config);
       stopLoading();
       if (Array.isArray(res.data) && res.data.length === 0) {
-        addMessage({
+        showToast({
           text: "検索結果が見つかりません",
           type: "error",
         });

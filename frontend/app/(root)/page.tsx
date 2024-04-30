@@ -1,10 +1,5 @@
 "use client";
-import {
-  MdError,
-  MdOutlineWarning,
-  MdInfo,
-  MdCheckCircle,
-} from "react-icons/md";
+import { MdError, MdOutlineWarning, MdInfo } from "react-icons/md";
 
 export default function Page() {
   return (

@@ -1,7 +1,7 @@
 "use client";
 import * as yup from "yup";
 import GridForm from "@/components/GridForm/GridForm";
-import Button from "@/components/Button";
+import Button from "@/components/Button/Button";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useGridForm } from "@/hooks/useGridForm";
@@ -11,7 +11,7 @@ import { useUpdate } from "@/hooks/useUpdate";
 import { useFetch } from "@/hooks/useFetch";
 import TextInput from "@/components/TextInput/TextInput";
 import Card from "@/components/Card/Card";
-import { OperationHeader } from "@/components/OperationHeader";
+import { OperationHeader } from "@/components/OperationHeader/OperationHeader";
 import NumberInput from "@/components/NumberInput/NumberInput";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 

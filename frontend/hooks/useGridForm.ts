@@ -13,6 +13,7 @@ import { useOperationHeader } from "@/context/OperationHeaderContext";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
 import { getIcon } from "@/utils/getIcon";
+import { useDialog } from "@/context/DialogContext";
 
 export type GridColumn = {
   binding: string;
@@ -40,6 +41,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
   const [grid, setGrid] = useState<FlexGridType<GridItem<T>>>();
   const [filter, setFilter] = useState<FlexGridFilter>();
   const { isReadOnly, operationType, isRegistable } = useOperationHeader();
+  const { showResultsDialog } = useDialog();
   useKeyboardShortcuts([
     {
       keys: "Alt+;",
@@ -131,6 +133,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
                   : undefined
             ),
             click: (e: MouseEvent, ctx: ICellTemplateContext) => {
+              showResultsDialog(ctx.item.results);
             },
             attributes: {
               class: "text-orange-500",

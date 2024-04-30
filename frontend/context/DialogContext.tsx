@@ -1,4 +1,6 @@
+import ResultsView from "@/components/ResultsView/ResultsView";
 import { createContext, useContext, useEffect, useState } from "react";
+import { render } from "react-dom";
 import Swal, { SweetAlertResult } from "sweetalert2";
 
 export type Dialog = {
@@ -8,10 +10,12 @@ export type Dialog = {
 
 interface DialogContextType {
   showDialog: (toast: Dialog) => Promise<SweetAlertResult<any>>;
+  showResultsDialog: () => Promise<SweetAlertResult<any>>;
 }
 
 const DialogContext = createContext<DialogContextType>({
   showDialog: () => Promise.resolve({} as SweetAlertResult<any>),
+  showResultsDialog: () => Promise.resolve({} as SweetAlertResult<any>),
 });
 
 export function useDialog() {
@@ -30,8 +34,20 @@ export const DialogProvider = ({ children }: { children: React.ReactNode }) => {
       cancelButtonText: "いいえ",
     });
   };
+  const showResultsDialog = (results: any) => {
+    const container = document.createElement("div");
+
+    render(<ResultsView itemsSource={results} />, container);
+
+    return Swal.fire({
+      title: "エラー",
+      html: container,
+      confirmButtonColor: "#808080",
+      confirmButtonText: "閉じる",
+    });
+  };
   return (
-    <DialogContext.Provider value={{ showDialog }}>
+    <DialogContext.Provider value={{ showDialog, showResultsDialog }}>
       {children}
     </DialogContext.Provider>
   );

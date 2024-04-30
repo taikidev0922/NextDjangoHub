@@ -1,5 +1,5 @@
 "use client";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import { LoadingProvider } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";

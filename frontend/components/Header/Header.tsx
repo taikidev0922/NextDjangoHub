@@ -3,7 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { MdMenu, MdAccountCircle } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import Menu from "./Menu";
+import Menu from "../Menu/Menu";
 import { request } from "@/lib/axiosUtils";
 
 type Props = {

@@ -2,7 +2,7 @@ import {
   OperationType,
   useOperationHeader,
 } from "@/context/OperationHeaderContext";
-import Button from "./Button";
+import Button from "../Button/Button";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useDialog } from "@/context/DialogContext";
 

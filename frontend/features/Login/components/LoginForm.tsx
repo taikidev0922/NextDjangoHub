@@ -3,7 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import yup from "@/lib/yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@/components/TextInput/TextInput";
-import Button from "@/components/Button";
+import Button from "@/components/Button/Button";
 
 export type FormData = {
   username: string;

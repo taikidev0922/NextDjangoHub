@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from "react";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const LoadingContext = createContext({
   isLoading: false,
@@ -37,7 +38,7 @@ export const LoadingProvider = ({
             fontSize: "24px",
           }}
         >
-          Loading...
+          <SyncLoader color="green" loading={isLoading} />
         </div>
       )}
       {children}

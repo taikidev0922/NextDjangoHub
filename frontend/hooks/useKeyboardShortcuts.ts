@@ -13,13 +13,13 @@ export const useKeyboardShortcuts = (shortcuts: Shortcut[]) => {
         // ショートカットキーの組み合わせを生成
         const keysCombination = shortcut.keys
           .split("+")
-          .map((key) => key.trim())
+          .map((key) => key.trim().toUpperCase()) // 大文字に統一
           .sort()
           .join("+");
         const eventKeyCombination = [
-          event.ctrlKey ? "Ctrl" : "",
-          event.shiftKey ? "Shift" : "",
-          event.altKey ? "Alt" : "",
+          event.ctrlKey ? "CTRL" : "", // 大文字に統一
+          event.shiftKey ? "SHIFT" : "", // 大文字に統一
+          event.altKey ? "ALT" : "", // 大文字に統一
           event.key.toUpperCase(), // ファンクションキーを含むため、toUpperCase() を使用
         ]
           .filter(Boolean) // 空の文字列を除外

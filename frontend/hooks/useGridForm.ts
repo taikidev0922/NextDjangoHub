@@ -97,7 +97,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
         width: 40,
         cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
           cell.style.textAlign = "center";
-          if (context.item.operation === "DELETE") {
+          if (operationType === "delete" && context.item.isSelected) {
             cell.style.backgroundColor = "#e8383d";
             return `<span class="text-white leading-none font-mono" style="font-size: 1.25rem;">D</span>`;
           }
@@ -230,10 +230,6 @@ export function useGridForm<T>(columns: GridColumn[]) {
 
   const deleteRow = () => {
     if (grid?.collectionView.currentItem.id) {
-      grid.beginUpdate();
-      grid.collectionView.currentItem.isSelected = true;
-      grid.collectionView.currentItem.operation = "DELETE";
-      grid.endUpdate();
       return;
     }
     grid?.collectionView.sourceCollection.splice(grid.selection.row, 1);
@@ -292,6 +288,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
   const getSelectedItems = () => {
     grid?.collectionView.items.forEach((item, index) => {
       item.cookie = index;
+      item.operation = operationType === "delete" ? "delete" : "save";
     });
     const selectedItems = grid?.collectionView.items.filter(
       (item) => item.isSelected
@@ -311,8 +308,15 @@ export function useGridForm<T>(columns: GridColumn[]) {
           (item) => item.cookie === res.cookie
         );
         if (!target) return;
-        target.isSelected = false;
-        _assign(target, res);
+        if (res.deleted_at) {
+          const index = grid?.collectionView.sourceCollection.findIndex(
+            (item) => item.cookie === res.cookie
+          );
+          grid?.collectionView.sourceCollection.splice(index, 1);
+        } else {
+          target.isSelected = false;
+          _assign(target, res);
+        }
       });
     } else {
       response?.forEach((res) => {
@@ -327,6 +331,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
       });
     }
     grid?.endUpdate();
+    grid?.collectionView.refresh();
   };
 
   return {

@@ -1,6 +1,5 @@
 "use client";
 import Header from "@/components/Header/Header";
-import { LoadingProvider } from "@/context/LoadingContext";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -35,7 +34,7 @@ export default function RootLayout({
     return <div></div>;
   }
   return (
-    <LoadingProvider>
+    <>
       <Header title="" isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen} />
       <main
         className={`-slate-100 transition-all duration-300 ease-in-out ${
@@ -47,6 +46,6 @@ export default function RootLayout({
           <AccordionProvider>{children}</AccordionProvider>
         </OperationHeaderProvider>
       </main>
-    </LoadingProvider>
+    </>
   );
 }

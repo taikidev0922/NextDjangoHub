@@ -5,6 +5,7 @@ import "./globals.css";
 import { useEffect } from "react";
 import { ToastProvider } from "@/context/ToastContext";
 import { DialogProvider } from "@/context/DialogContext";
+import { LoadingProvider } from "@/context/LoadingContext";
 
 export default function RootLayout({
   children,
@@ -26,7 +27,9 @@ export default function RootLayout({
       <body>
         <AuthProvider>
           <DialogProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <LoadingProvider>
+              <ToastProvider>{children}</ToastProvider>
+            </LoadingProvider>
           </DialogProvider>
         </AuthProvider>
       </body>

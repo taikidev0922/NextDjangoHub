@@ -35,13 +35,21 @@ const OperationRadio = ({
 };
 
 export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
-  const { operationType, operationTypeList, onChangeOperation } =
+  const { operationType, operationTypeList, onChangeOperation, isEditable } =
     useOperationHeader();
   const { showDialog } = useDialog();
   useKeyboardShortcuts([
     {
       keys: "F3",
       action: () => {
+        if (!isEditable) return;
+        handleUpdate();
+      },
+    },
+    {
+      keys: "F4",
+      action: () => {
+        if (operationType !== "delete") return;
         handleUpdate();
       },
     },
@@ -90,7 +98,11 @@ export const OperationHeader = ({ onUpdate }: { onUpdate: () => void }) => {
         >
           F3 更新
         </Button>
-        <Button className="btn-error" disabled={operationType !== "delete"}>
+        <Button
+          className="btn-error"
+          disabled={operationType !== "delete"}
+          onClick={handleUpdate}
+        >
           F4 削除
         </Button>
       </div>

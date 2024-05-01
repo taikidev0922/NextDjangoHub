@@ -11,4 +11,5 @@ class Sample(models.Model):
     price = models.IntegerField(verbose_name='価格')
     created_at = models.DateTimeField(verbose_name='登録日',auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name='更新日',auto_now=True)
+    deleted_at = models.DateTimeField(verbose_name='削除日',null=True,blank=True)
 

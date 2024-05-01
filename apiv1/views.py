@@ -1,14 +1,7 @@
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
 from sample.models import Sample
 from .serializers import SampleSerializer,BulkSampleListSerializer
-from django_filters import rest_framework as filters
-from rest_framework.response import Response
-from rest_framework.decorators import action
-from django.db import transaction
-from rest_framework import generics
-from django.utils import timezone
 from base.views import BulkUpdateModelViewSet
+from django_filters import rest_framework as filters
 
 
 class SampleFilter(filters.FilterSet):

@@ -2,8 +2,12 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from django.utils import timezone
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
+from django_filters import rest_framework as filters
 
 class BulkUpdateModelViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated]
+    filter_backends = [filters.DjangoFilterBackend]
     """
     モデルビューセットのための基底クラスで、bulk_updateアクションを提供します。
     """

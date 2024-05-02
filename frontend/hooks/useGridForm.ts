@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {
   FlexGrid as FlexGridType,
   ICellTemplateContext,
+  ICellTemplateFunction,
   CellType,
   KeyAction,
 } from "@grapecity/wijmo.grid";
@@ -14,6 +15,8 @@ import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
 import { getIcon } from "@/utils/getIcon";
 import { useDialog } from "@/context/DialogContext";
+import { useFocus } from "./useFocus";
+import { useToast } from "@/context/ToastContext";
 
 export type GridColumn = {
   binding: string;
@@ -22,6 +25,9 @@ export type GridColumn = {
   width?: number;
   cssClass?: string;
   allowSorting?: boolean;
+  allowResizing?: boolean;
+  allowDragging?: boolean;
+  cellTemplate?: ICellTemplateFunction;
 };
 
 type GridItem<T> = T & {
@@ -42,6 +48,8 @@ export function useGridForm<T>(columns: GridColumn[]) {
   const [filter, setFilter] = useState<FlexGridFilter>();
   const { isReadOnly, operationType, isRegistable } = useOperationHeader();
   const { showResultsDialog } = useDialog();
+  const { focusedStyle, setFocusedIvent } = useFocus();
+  const { showToast } = useToast();
   useKeyboardShortcuts([
     {
       keys: "Alt+;",
@@ -73,13 +81,21 @@ export function useGridForm<T>(columns: GridColumn[]) {
         exportExcel();
       },
     },
+    {
+      keys: "Alt+g",
+      action: () => {
+        resetGrid();
+      },
+    },
   ]);
 
   useEffect(() => {
     resetGrid(grid);
   }, [operationType]);
 
-  const resetGrid = (e: FlexGridType | undefined) => {
+  const resetGrid = (e?: FlexGridType) => {
+    const resettingGrid = e || grid;
+    if (!resettingGrid) return;
     const rowHeader: GridColumn[] = [
       {
         binding: "isSelected",
@@ -88,12 +104,16 @@ export function useGridForm<T>(columns: GridColumn[]) {
         width: 40,
         cssClass: "wj-header",
         allowSorting: false,
+        allowResizing: false,
+        allowDragging: false,
       },
       {
         binding: "operation",
         header: " ",
         dataType: "string",
         allowSorting: false,
+        allowResizing: false,
+        allowDragging: false,
         width: 40,
         cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
           cell.style.textAlign = "center";
@@ -120,6 +140,9 @@ export function useGridForm<T>(columns: GridColumn[]) {
         header: " ",
         dataType: "string",
         cssClass: "wj-header flex items-center",
+        allowSorting: false,
+        allowResizing: false,
+        allowDragging: false,
         width: 40,
         cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
           return CellMaker.makeButton({
@@ -142,11 +165,10 @@ export function useGridForm<T>(columns: GridColumn[]) {
         },
       },
     ] as GridColumn[];
-    if (!e) return;
     const itemsSource = Array.from({ length: isRegistable ? 10 : 0 }, () => ({
       isSelected: false,
     }));
-    e.initialize({
+    resettingGrid.initialize({
       itemsSource,
       autoGenerateColumns: false,
       keyActionEnter: KeyAction.CycleEditable,
@@ -165,6 +187,24 @@ export function useGridForm<T>(columns: GridColumn[]) {
         dataType: dataType[column.dataType],
       })),
     });
+    // 保存したレイアウトの反映
+    const columnLayout = localStorage.getItem("myLayout");
+    if (columnLayout) {
+      const layoutColumns = JSON.parse(columnLayout)?.columns;
+      const columnOrder = layoutColumns.map((column: any) => column.binding);
+      resettingGrid.columns.forEach((column) => {
+        const layoutColumn = layoutColumns.find(
+          (lc: any) => lc.binding === column.binding
+        );
+        if (layoutColumn) {
+          column.width = layoutColumn.width;
+          const index = columnOrder.indexOf(column.binding);
+          (column as any).displayIndex =
+            index >= 0 ? index : resettingGrid.columns.length;
+        }
+      });
+      resettingGrid.columns.sort((a, b) => a.displayIndex - b.displayIndex);
+    }
   };
 
   const initGrid = (flexGrid: FlexGridType) => {
@@ -175,6 +215,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
       })
     );
     resetGrid(flexGrid);
+    setFocusedIvent(flexGrid);
     flexGrid.itemFormatter = (panel, r, c, cell) => {
       if (panel.cellType === CellType.ColumnHeader) {
         cell.style.textAlign = "left";
@@ -194,7 +235,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
     });
     flexGrid.selectionChanged.addHandler((_, args) => {
       if (args.col === 0) {
-        flexGrid.select(args.row, 2);
+        flexGrid.select(args.row, 3);
       }
     });
     flexGrid.hostElement.addEventListener("keydown", (e) => {
@@ -203,16 +244,16 @@ export function useGridForm<T>(columns: GridColumn[]) {
         (e.key === "Enter" || e.key === "Tab") &&
         flexGrid.selection.col === 1
       ) {
-        flexGrid.select(flexGrid.selection.row - 1, columns.length + 1);
+        flexGrid.select(flexGrid.selection.row - 1, columns.length + 2);
       }
-      if (e.key === "ArrowLeft" && flexGrid.selection.col === 1) {
-        flexGrid.select(flexGrid.selection.row, 2);
+      if (e.key === "ArrowLeft" && flexGrid.selection.col === 2) {
+        flexGrid.select(flexGrid.selection.row, 3);
       }
     });
     flexGrid.hostElement.addEventListener("click", (e) => {
       const hit = flexGrid.hitTest(e);
-      if (hit.col === 0 || hit.col === 1) {
-        flexGrid.select(hit.row, 2);
+      if (hit.col === 0 || hit.col === 1 || hit.col === 2) {
+        flexGrid.select(hit.row, 3);
       }
     });
   };
@@ -268,6 +309,21 @@ export function useGridForm<T>(columns: GridColumn[]) {
     );
   };
 
+  const saveLayout = () => {
+    if (!grid) return;
+    localStorage.setItem("myLayout", grid.columnLayout);
+    showToast({
+      text: "レイアウトを保存しました",
+      type: "success",
+    });
+  };
+
+  const loadLayout = () => {
+    const layout = localStorage.getItem("myLayout");
+    if (!layout || !grid) return;
+    grid.columnLayout = layout;
+  };
+
   const register = (name: string) => {
     return {
       name,
@@ -277,6 +333,10 @@ export function useGridForm<T>(columns: GridColumn[]) {
       copyRow,
       clearFilter,
       exportExcel,
+      saveLayout,
+      loadLayout,
+      resetGrid,
+      focusedStyle,
     };
   };
 
@@ -297,6 +357,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const applyResults = (response: any[]) => {
+    console.log("applyResults", response);
     if (response.length === 0) return;
     grid?.beginUpdate();
     grid?.collectionView.items.forEach((item) => {

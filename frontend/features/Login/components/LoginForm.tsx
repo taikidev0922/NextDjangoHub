@@ -4,6 +4,7 @@ import yup from "@/lib/yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "@/components/TextInput/TextInput";
 import Button from "@/components/Button/Button";
+import { useLoading } from "@/context/LoadingContext";
 
 export type FormData = {
   username: string;
@@ -26,6 +27,7 @@ export default function LoginForm({
 }: {
   login: (username: string, password: string) => Promise<void>;
 }) {
+  const { startLoading, stopLoading } = useLoading();
   const {
     handleSubmit,
     formState: { errors },
@@ -38,27 +40,33 @@ export default function LoginForm({
     },
   });
   const onSubmit: SubmitHandler<FormData> = async (data) => {
+    startLoading();
     await login(data.username, data.password);
+    stopLoading();
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate>
-      <TextInput
-        control={control}
-        name="username"
-        errors={errors}
-        label="ユーザー名"
-      />
-      <TextInput
-        control={control}
-        name="password"
-        errors={errors}
-        label="パスワード"
-      />
+    <div className="max-w-sm mx-auto p-8 border rounded-lg shadow-lg bg-white">
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <TextInput
+          control={control}
+          name="username"
+          errors={errors}
+          label="ユーザー名"
+          className="mb-4"
+        />
+        <TextInput
+          control={control}
+          name="password"
+          errors={errors}
+          label="パスワード"
+          className="mb-4"
+        />
 
-      <Button type="submit" className="btn-primary w-full mt-5">
-        Login
-      </Button>
-    </form>
+        <Button type="submit" className="btn-primary w-full mt-5">
+          Login
+        </Button>
+      </form>
+    </div>
   );
 }

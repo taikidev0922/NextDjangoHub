@@ -1,6 +1,8 @@
 import { InputNumber } from "@grapecity/wijmo.react.input";
 import { InputNumber as InputNumberType } from "@grapecity/wijmo.input";
 import { Controller } from "react-hook-form";
+import { useFocus } from "@/hooks/useFocus";
+import { set } from "lodash";
 type Props = {
   control: any;
   name: string;
@@ -16,6 +18,7 @@ export default function TextInput({
   label,
   className,
 }: Props) {
+  const { focusedStyle, setFocusedIvent } = useFocus();
   return (
     <section className={className}>
       <div className="flex flex-col">
@@ -30,12 +33,13 @@ export default function TextInput({
               isRequired={false}
               id={name}
               name={name}
-              className="bg-editable"
+              className={`bg-editable${focusedStyle}`}
               valueChanged={(e: InputNumberType) => {
                 field.onChange(e.value ?? NaN);
               }}
               value={field.value}
               text=""
+              initialized={setFocusedIvent}
             />
           )}
         />

@@ -27,11 +27,18 @@ function SampleList() {
         handleSubmit(search)();
       },
     },
+    {
+      keys: "Alt+S",
+      action: () => {
+        reset();
+      },
+    },
   ]);
   const {
     handleSubmit,
     formState: { errors },
     control,
+    reset,
   } = useForm<SampleQuery>({
     resolver: yupResolver(
       yup.object({
@@ -115,6 +122,9 @@ function SampleList() {
           <div className="flex-grow"></div>
           <Button className="btn-primary" onClick={handleSubmit(search)}>
             F1 検索
+          </Button>
+          <Button className="btn-outline" onClick={reset}>
+            Alt+S 検索項目リセット
           </Button>
         </form>
       </Card>

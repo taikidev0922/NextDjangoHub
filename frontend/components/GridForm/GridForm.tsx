@@ -20,6 +20,9 @@ function GridForm({
   copyRow,
   clearFilter,
   exportExcel,
+  saveLayout,
+  resetGrid,
+  focusedStyle,
 }: {
   name: string;
   initGrid: (e: FlexGridType) => void;
@@ -28,6 +31,9 @@ function GridForm({
   copyRow: () => void;
   clearFilter: () => void;
   exportExcel: () => void;
+  saveLayout: () => void;
+  resetGrid: (e?: FlexGridType) => void;
+  focusedStyle: string;
 }) {
   const { setResizeGrid } = useAccordion();
   const { isEditable } = useOperationHeader();
@@ -55,7 +61,7 @@ function GridForm({
       <FlexGrid
         initialized={initGrid}
         style={{ height: gridHeight }}
-        className="flex-grid"
+        className={`flex-grid${focusedStyle}`}
       >
         <FlexGridCellTemplate
           cellType="RowHeader"
@@ -97,6 +103,20 @@ function GridForm({
           onClick={exportExcel}
         >
           Alt+Q Excel
+        </Button>
+        <Button
+          className="flex items-center btn-grid-action"
+          onClick={saveLayout}
+        >
+          Alt+L レイアウト保存
+        </Button>
+        <Button
+          className="btn-outline ml-auto"
+          onClick={() => {
+            resetGrid();
+          }}
+        >
+          Alt+G 一覧リセット
         </Button>
       </div>
     </Card>

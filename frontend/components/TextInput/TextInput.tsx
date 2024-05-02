@@ -1,6 +1,8 @@
 import { ComboBox } from "@grapecity/wijmo.react.input";
 import { ComboBox as ComboBoxType } from "@grapecity/wijmo.input";
 import { Controller } from "react-hook-form";
+import { useState } from "react";
+import { useFocus } from "@/hooks/useFocus";
 type Props = {
   control: any;
   name: string;
@@ -17,6 +19,7 @@ export default function TextInput({
   className,
   inputType = "text",
 }: Props) {
+  const { focusedStyle, setFocusedIvent } = useFocus();
   return (
     <section className={className}>
       <div className="flex flex-col">
@@ -30,10 +33,11 @@ export default function TextInput({
             <ComboBox
               id={name}
               name={name}
-              className="bg-editable"
+              className={`bg-editable${focusedStyle}`}
               textChanged={(e: ComboBoxType) => field.onChange(e.text)}
               text={field.value}
               inputType={inputType}
+              initialized={setFocusedIvent}
             />
           )}
         />

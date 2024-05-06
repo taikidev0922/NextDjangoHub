@@ -1,106 +1,54 @@
-"use client";
-import * as yup from "yup";
-import GridForm from "@/components/GridForm/GridForm";
-import Button from "@/components/Button/Button";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useGridForm } from "@/hooks/useGridForm";
-import { Sample } from "@/models/Sample";
-import { RequestParameters } from "@/lib/schemaHelper";
-import { useUpdate } from "@/hooks/useUpdate";
-import { useFetch } from "@/hooks/useFetch";
 import TextInput from "@/components/TextInput/TextInput";
-import Card from "@/components/Card/Card";
-import { OperationHeader } from "@/components/OperationHeader/OperationHeader";
+import yup from "@/lib/yup";
+import ListTemplate from "@/template/ListTemplate";
+import { yupResolver } from "@hookform/resolvers/yup";
 import NumberInput from "@/components/NumberInput/NumberInput";
-import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 
-type SampleQuery = NonNullable<RequestParameters<"/api/v1/sample/", "get">>;
-
-function SampleList() {
-  const { update } = useUpdate();
-  const { fetch } = useFetch();
-  useKeyboardShortcuts([
-    {
-      keys: "F1",
-      action: () => {
-        handleSubmit(search)();
-      },
-    },
-    {
-      keys: "Alt+S",
-      action: () => {
-        reset();
-      },
-    },
-  ]);
-  const {
-    handleSubmit,
-    formState: { errors },
-    control,
-    reset,
-  } = useForm<SampleQuery>({
-    resolver: yupResolver(
-      yup.object({
-        title: yup.string(),
-        price: yup
-          .number()
-          .optional()
-          .transform((value, originalValue) =>
-            isNaN(Number(originalValue)) ? undefined : Number(originalValue)
-          ),
-        description: yup.string(),
-      })
-    ),
-    defaultValues: {
-      title: undefined,
-      price: undefined,
-      description: undefined,
-    },
-  });
-
-  const { register, setItemsSource, getSelectedItems, applyResults } =
-    useGridForm<Sample>([
-      {
-        binding: "title",
-        header: "title",
-        dataType: "string",
-      },
-      {
-        binding: "price",
-        header: "price",
-        dataType: "number",
-      },
-      {
-        binding: "description",
-        header: "description",
-        dataType: "string",
-      },
-    ]);
-
-  const search = async (data: SampleQuery) => {
-    const items = await fetch({
-      url: "/api/v1/sample/",
-      method: "get",
-      params: data,
-    });
-    setItemsSource(items);
+export default function SampleList() {
+  const searchForm = yupResolver(
+    yup.object({
+      title: yup.string(),
+      price: yup
+        .number()
+        .optional()
+        .transform((value, originalValue) =>
+          isNaN(Number(originalValue)) ? undefined : Number(originalValue)
+        ),
+      description: yup.string(),
+    })
+  );
+  const searchFormDefaultValues = {
+    title: undefined,
+    price: undefined,
+    description: undefined,
   };
-
-  const onUpdate = async () => {
-    await update(
-      { url: "/api/v1/sample/bulk_update/", method: "put" },
-      getSelectedItems()
-    ).then((results) => {
-      applyResults(results);
-    });
-  };
-
+  const listColumns = [
+    {
+      binding: "title",
+      header: "title",
+      dataType: "string",
+    },
+    {
+      binding: "price",
+      header: "price",
+      dataType: "number",
+    },
+    {
+      binding: "description",
+      header: "description",
+      dataType: "string",
+    },
+  ];
   return (
-    <div>
-      <OperationHeader onUpdate={onUpdate} />
-      <Card title="検索項目">
-        <form noValidate className="flex gap-4 items-end">
+    <ListTemplate
+      defaultValues={searchFormDefaultValues}
+      resolver={searchForm}
+      fetchUrl="/api/v1/sample/"
+      listColumns={listColumns}
+      listName="サンプル一覧"
+    >
+      {({ control, errors }) => (
+        <>
           <TextInput
             name="title"
             label="title"
@@ -119,18 +67,8 @@ function SampleList() {
             control={control}
             errors={errors}
           />
-          <div className="flex-grow"></div>
-          <Button className="btn-primary" onClick={handleSubmit(search)}>
-            F1 検索
-          </Button>
-          <Button className="btn-outline" onClick={reset}>
-            Alt+S 検索項目リセット
-          </Button>
-        </form>
-      </Card>
-      <GridForm {...register("サンプル一覧")} />
-    </div>
+        </>
+      )}
+    </ListTemplate>
   );
 }
-
-export default SampleList;

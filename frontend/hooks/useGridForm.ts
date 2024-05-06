@@ -16,7 +16,7 @@ import { FlexGridXlsxConverter } from "@grapecity/wijmo.grid.xlsx";
 import { getIcon } from "@/utils/getIcon";
 import { useDialog } from "@/context/DialogContext";
 import { useFocus } from "./useFocus";
-import { useToast } from "@/context/ToastContext";
+import { useToast } from "@/context/Toast/ToastContext";
 
 export type GridColumn = {
   binding: string;
@@ -227,6 +227,8 @@ export function useGridForm<T>(columns: GridColumn[]) {
         item.isSelected = false;
       });
       flexGrid.endUpdate();
+      flexGrid.focus();
+      flexGrid.select(0, 3);
     });
     flexGrid.cellEditEnding.addHandler((_, args) => {
       flexGrid.beginUpdate();
@@ -239,6 +241,9 @@ export function useGridForm<T>(columns: GridColumn[]) {
       }
     });
     flexGrid.hostElement.addEventListener("keydown", (e) => {
+      if (!e.isTrusted) {
+        console.log(e.key);
+      }
       if (
         e.shiftKey &&
         (e.key === "Enter" || e.key === "Tab") &&
@@ -252,6 +257,9 @@ export function useGridForm<T>(columns: GridColumn[]) {
     });
     flexGrid.hostElement.addEventListener("click", (e) => {
       const hit = flexGrid.hitTest(e);
+      if (!e.isTrusted) {
+        console.log("hoge");
+      }
       if (hit.col === 0 || hit.col === 1 || hit.col === 2) {
         flexGrid.select(hit.row, 3);
       }
@@ -259,20 +267,17 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const addRow = () => {
-    grid?.collectionView.sourceCollection.splice(
-      grid.selection.row + 1,
-      0,
-      {} as GridItem<T>
-    );
+    grid?.collectionView.sourceCollection.splice(grid.selection.row + 1, 0, {
+      isSelected: false,
+    } as GridItem<T>);
     grid?.collectionView.refresh();
     grid?.focus();
     grid?.select(grid.selection.row + 1, grid.selection.col);
   };
 
   const deleteRow = () => {
-    if (grid?.collectionView.currentItem.id) {
-      return;
-    }
+    if (grid?.collectionView?.currentItem?.id) return;
+    if (!grid?.collectionView?.currentItem) return;
     grid?.collectionView.sourceCollection.splice(grid.selection.row, 1);
     grid?.collectionView.refresh();
   };
@@ -357,7 +362,6 @@ export function useGridForm<T>(columns: GridColumn[]) {
   };
 
   const applyResults = (response: any[]) => {
-    console.log("applyResults", response);
     if (response.length === 0) return;
     grid?.beginUpdate();
     grid?.collectionView.items.forEach((item) => {

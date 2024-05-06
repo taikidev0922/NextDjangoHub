@@ -9,7 +9,6 @@ import Card from "../Card/Card";
 import Button from "../Button/Button";
 import { useEffect, useState } from "react";
 import { useAccordion } from "@/context/AccordionContext";
-import { isEditable } from "@testing-library/user-event/dist/cjs/utils/index.js";
 import { useOperationHeader } from "@/context/OperationHeaderContext";
 
 function GridForm({

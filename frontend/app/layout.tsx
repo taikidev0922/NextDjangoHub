@@ -3,7 +3,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import "@grapecity/wijmo.styles/wijmo.css";
 import "./globals.css";
 import { useEffect } from "react";
-import { ToastProvider } from "@/context/ToastContext";
+import { ToastProvider } from "@/context/Toast/ToastContext";
 import { DialogProvider } from "@/context/DialogContext";
 import { LoadingProvider } from "@/context/LoadingContext";
 

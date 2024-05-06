@@ -33,7 +33,8 @@ INSTALLED_APPS = [
     'sample.apps.SampleConfig',
     'corsheaders',
     'django_filters',
-    'drf_spectacular'
+    'drf_spectacular',
+    'orders.apps.OrdersConfig',
 ]
 
 MIDDLEWARE = [

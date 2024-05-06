@@ -10,7 +10,7 @@ export type Dialog = {
 
 interface DialogContextType {
   showDialog: (toast: Dialog) => Promise<SweetAlertResult<any>>;
-  showResultsDialog: () => Promise<SweetAlertResult<any>>;
+  showResultsDialog: (results: any) => Promise<SweetAlertResult<any>>;
 }
 
 const DialogContext = createContext<DialogContextType>({

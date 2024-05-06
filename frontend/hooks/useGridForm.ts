@@ -147,10 +147,12 @@ export function useGridForm<T>(columns: GridColumn[]) {
         cellTemplate(context: ICellTemplateContext, cell: HTMLElement) {
           return CellMaker.makeButton({
             text: getIcon(
-              context.item.results?.some((result) => result.type === "error")
+              context.item.results?.some(
+                (result: any) => result.type === "error"
+              )
                 ? "error"
                 : context.item.results?.some(
-                      (result) => result.type === "warning"
+                      (result: any) => result.type === "warning"
                     )
                   ? "warning"
                   : undefined
@@ -203,7 +205,9 @@ export function useGridForm<T>(columns: GridColumn[]) {
             index >= 0 ? index : resettingGrid.columns.length;
         }
       });
-      resettingGrid.columns.sort((a, b) => a.displayIndex - b.displayIndex);
+      resettingGrid.columns.sort(
+        (a: any, b: any) => a.displayIndex - b.displayIndex
+      );
     }
   };
 
@@ -364,7 +368,7 @@ export function useGridForm<T>(columns: GridColumn[]) {
   const applyResults = (response: any[]) => {
     if (response.length === 0) return;
     grid?.beginUpdate();
-    grid?.collectionView.items.forEach((item) => {
+    grid?.collectionView.items.forEach((item: any) => {
       item.results = undefined;
     });
     if (!response.some((res) => res.results && res.results.length > 0)) {
@@ -374,9 +378,10 @@ export function useGridForm<T>(columns: GridColumn[]) {
         );
         if (!target) return;
         if (res.deleted_at) {
-          const index = grid?.collectionView.sourceCollection.findIndex(
-            (item) => item.cookie === res.cookie
-          );
+          const index =
+            grid?.collectionView.sourceCollection.findIndex(
+              (item) => item.cookie === res.cookie
+            ) ?? 0;
           grid?.collectionView.sourceCollection.splice(index, 1);
         } else {
           target.isSelected = false;
@@ -384,9 +389,9 @@ export function useGridForm<T>(columns: GridColumn[]) {
         }
       });
     } else {
-      response?.forEach((res) => {
-        const target = grid?.collectionView.items.find(
-          (item) => item.cookie === res.cookie
+      response?.forEach((res: any) => {
+        const target: any = grid?.collectionView.items.find(
+          (item: any) => item.cookie === res.cookie
         );
         if (!target) return;
         if (res.results && res.results.length > 0) {

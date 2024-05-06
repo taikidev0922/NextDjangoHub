@@ -32,7 +32,7 @@ export function useUpdate() {
         type: "success",
       });
       return res.data as schemaHelper.ResponseData<Path, Method>;
-    } catch (e) {
+    } catch (e: any) {
       stopLoading();
       showToast({
         text: "更新に失敗しました",
